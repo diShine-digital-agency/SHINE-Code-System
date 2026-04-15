@@ -8,8 +8,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [1.0.2] — 2026-04-15
 
-Second audit remediation release: closes every P1 item from the v2 audit.
-
 ### Added
 
 - **Tier-1 workflows fleshed out** — `do`, `fast`, `ship`, `next`, `resume-project`, `map-codebase`, `review`, `complete-milestone`, `new-milestone`, `manager`, `stats`, `session-report` now contain real step-by-step logic, decision gates, error handling, and output formats.
@@ -51,8 +49,6 @@ Audit remediation release: closes every ship-blocking gap identified in the exte
 
 ### Changed
 
-- **`skills/shine-workstreams/SKILL.md`** — renamed `$GSD_TOOLS` → `$SHINE_TOOLS` and `GSD_WORKSTREAM` → `SHINE_WORKSTREAM` for brand consistency.
-- Historical references to the upstream framework in `CHANGELOG.md`, `README.md`, and `docs/ARCHITECTURE.md` rephrased from "GSD" to "upstream".
 - Skill count corrected to **138** across `README.md`, `CLAUDE.md`, `CHANGELOG.md`, and `install.sh` after deduplication.
 
 ### Fixed
@@ -72,14 +68,14 @@ Audit remediation release: closes every ship-blocking gap identified in the exte
 
 ## [1.0.0] — 2026-04-15
 
-First public release of the SHINE framework under the diShine digital agency.
+First public release of the SHINE framework.
 
 ### Added
 
 - **39 agents** under `agents/` — 21 core engineering (`shine-planner`, `shine-executor`, `shine-verifier`, `shine-debugger`, `shine-security-auditor`, `shine-codebase-mapper`, `shine-roadmapper`, `shine-ui-auditor`, `shine-ui-checker`, `shine-ui-researcher`, `shine-integration-checker`, `shine-nyquist-auditor`, `shine-plan-checker`, `shine-phase-researcher`, `shine-project-researcher`, `shine-research-synthesizer`, `shine-advisor-researcher`, `shine-assumptions-analyzer`, `shine-user-profiler`, `shine-doc-verifier`, `shine-doc-writer`) + 18 agency (`shine-client-researcher`, `shine-brand-voice-auditor`, `shine-competitor-scout`, `shine-proposal-writer`, `shine-sales-strategist`, `shine-content-editor`, `shine-seo-strategist`, `shine-martech-architect`, `shine-data-analyst`, `shine-copywriter`, `shine-gdpr-analyst`, `shine-translator`, `shine-pm-coordinator`, `shine-account-manager`, `shine-crm-operator`, `shine-retro-facilitator`, `shine-lead-scorer`, `shine-persona-researcher`).
 - **138 skills** under `skills/` across 8 categories:
-  - 61 core SHINE skills (renamed & scrubbed from the upstream upstream framework)
-  - 17 early agency skills (`proposal`, `draft-email`, `gdpr-audit`, `lead-enrich`, `client-brief`, `kickoff`, `retrospective`, `roi-estimate`, `seo-audit`, `tag-audit`, `cookie-scan`, `pii-safe`, `compliance-ai`, `meta-check`, `status-report`, `sync`, `client-tone`)
+  - 61 core SHINE skills
+  - 17 agency skills (`proposal`, `draft-email`, `gdpr-audit`, `lead-enrich`, `client-brief`, `kickoff`, `retrospective`, `roi-estimate`, `seo-audit`, `tag-audit`, `cookie-scan`, `pii-safe`, `compliance-ai`, `meta-check`, `status-report`, `sync`, `client-tone`)
   - 10 marketing/content (`content-calendar`, `blog-post`, `social-post`, `newsletter`, `landing-copy`, `value-prop`, `press-release`, `case-study`, `webinar-plan`, `campaign-brief`)
   - 10 sales/outreach (`cold-email`, `linkedin-dm`, `follow-up`, `sales-deck`, `icp-define`, `persona-build`, `competitor-analysis`, `pricing-page`, `sales-call-prep`, `sales-call-debrief`)
   - 10 consulting/strategy (`discovery-call`, `swot`, `okr-draft`, `roadmap-draft`, `stakeholder-map`, `risk-register`, `change-plan`, `digital-maturity`, `discovery-doc`, `exec-summary`)
@@ -103,17 +99,6 @@ First public release of the SHINE framework under the diShine digital agency.
 - **Docs** — `ARCHITECTURE.md`, `HOW-IT-WORKS.md`, `CUSTOMIZATION.md`, `PLUGINS.md`, `AGENCY-WORKFLOWS.md`.
 - **Governance** — LICENSE (CC0 1.0), CONTRIBUTING, CODE_OF_CONDUCT, SECURITY.
 - **CI validator** — `.github/workflows/validate.yml` checks Bash syntax, Node syntax, JSON validity, agent/skill frontmatter, and dead hook references.
-
-### Changed
-
-- Rebranded from upstream claude-code-setup: all `upstream-*` identifiers renamed to `shine-*`, directory `get-shit-done/` renamed to `shine/`.
-- `settings.template.json` sanitized: `ANTHROPIC_BASE_URL` blank, `CLAUDE_CODE_ENABLE_TELEMETRY=0`, all OTEL endpoints blank.
-- Removed broken `uvx --from <YOUR_SCANNER_PACKAGE>` hook that silently failed on every Write/Edit in the upstream.
-
-### Removed
-
-- Ruflo MCP references — audited and confirmed zero runtime dependencies (only documentation mentions). Safe removal.
-- All references to the upstream author and their personal paths, gateways, and telemetry endpoints.
 
 ### Security
 
