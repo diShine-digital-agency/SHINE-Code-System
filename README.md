@@ -1,18 +1,30 @@
-# 🌟 SHINE Claude Code Framework
+# 🧠 SHINE Code System: agency-grade auto-pilot configuration (with rule-based orchestration, state-persistence layer and custom agents) for Claude Code
 
-[![diShine Logo](https://dishine.it/favicon.ico)](https://dishine.it)
+<div align="center">
+  
+[![diShine Logo](https://dishine.it/favicon.ico)](https://dishine.it/)
 
-**An agency-grade auto-pilot configuration for Claude Code**
-
-_Strategize · Handle · Implement · Navigate · Evaluate_
+_SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
 
 [![Website](https://img.shields.io/badge/Website-dishine.it-blue)](https://dishine.it/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-diShine-blue)](https://linkedin.com/company/100682596)
-[![Location](https://img.shields.io/badge/Location-Milan%2C%20Italy-green)](https://dishine.it)
-[![License: CC0](https://img.shields.io/badge/License-CC0%201.0-lightgrey)](./LICENSE)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://docs.anthropic.com/en/docs/claude-code)
+[![Location](https://img.shields.io/badge/Location-Milan%2C%20Italy-green)]()
+[![License: CC0](https://img.shields.io/badge/License-CC0%201.0-lightgrey)](LICENSE)
 
-> SHINE turns Claude Code into an orchestrator. Instead of telling Claude which tool to use every time, a single global `CLAUDE.md` with **20 decision rules** pattern-matches every prompt to the right tool chain — automatically. Add a persistent `MEMORY.md` layer that survives across conversations, and you have an auto-pilot calibrated for consulting, MarTech, and digital-agency work.
+<p align="center">
+  <img src="docs/shine_code_system_v2_01_system_overview_board.webp" alt="SHINE Code System overview board" width="90%">
+</p>
+
+***SHINE Code System turns Claude Code into an orchestrator. Instead of telling Claude which tool to use every time, a single global `CLAUDE.md` with **20 decision rules** pattern-matches every prompt to the right tool chain — automatically. Add a persistent `MEMORY.md` layer that survives across conversations, and you have an auto-pilot calibrated for consulting, MarTech, and digital-agency work.***
+
+Built by [diShine Digital Agency](https://dishine.it).
+
+</div>
+
+<p align="center">
+  <img src="docs/shine_code_system_v2_04_extension_connector_map.webp" alt="SHINE Code System connector map" width="49%">
+  <img src="docs/shine_code_system_v2_03_agency_workflow_matrix.webp" alt="SHINE Code System workflow matrix" width="49%">
+</p>
 
 ---
 
