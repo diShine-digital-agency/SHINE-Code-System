@@ -22,8 +22,7 @@ Built by [diShine Digital Agency](https://dishine.it).
 </div>
 
 <p align="center">
-  <img src="docs/shine_code_system_v2_04_extension_connector_map.webp" alt="SHINE Code System connector map" width="49%">
-  <img src="docs/shine_code_system_v2_03_agency_workflow_matrix.webp" alt="SHINE Code System workflow matrix" width="49%">
+  <img src="docs/shine_code_system_v2_04_extension_connector_map.webp" alt="SHINE Code System connector map" width="100%">
 </p>
 
 ---
