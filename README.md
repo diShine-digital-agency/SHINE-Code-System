@@ -1,4 +1,4 @@
-# 🧠 SHINE Code System: agency-grade auto-pilot configuration (with rule-based orchestration, state-persistence layer and custom agents) for Claude Code
+# 🧠 SHINE Code System: agency-grade auto-pilot configuration for Claude Code
 
 <div align="center">
   
