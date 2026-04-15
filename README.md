@@ -1,0 +1,580 @@
+# 🌟 SHINE Claude Code Framework
+
+[![diShine Logo](https://dishine.it/favicon.ico)](https://dishine.it)
+
+**An agency-grade auto-pilot configuration for Claude Code**
+
+_Strategize · Handle · Implement · Navigate · Evaluate_
+
+[![Website](https://img.shields.io/badge/Website-dishine.it-blue)](https://dishine.it/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-diShine-blue)](https://linkedin.com/company/100682596)
+[![Location](https://img.shields.io/badge/Location-Milan%2C%20Italy-green)](https://dishine.it)
+[![License: CC0](https://img.shields.io/badge/License-CC0%201.0-lightgrey)](./LICENSE)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://docs.anthropic.com/en/docs/claude-code)
+
+> SHINE turns Claude Code into an orchestrator. Instead of telling Claude which tool to use every time, a single global `CLAUDE.md` with **20 decision rules** pattern-matches every prompt to the right tool chain — automatically. Add a persistent `MEMORY.md` layer that survives across conversations, and you have an auto-pilot calibrated for consulting, MarTech, and digital-agency work.
+
+---
+
+## 💼 Business Value at a Glance
+
+![SHINE business value map](docs/business-value.svg)
+
+<sub>👀 Diagram: `docs/business-value.svg` — three bands: **① Business input** (brief, inbox thread, lead list, bug ticket, campaign idea, GDPR question) → **② SHINE engine** (20 decision rules · typed memory · 138 skills · 39 agents · 7 hooks · always-on guardrails) → **③ Business deliverables** (proposal, email draft, lead CSV, fix + 5-section report, campaign brief, GDPR verdict). ROI band: 3–8× faster drafting, on-brand every time, GDPR-native, institutional memory that survives staff churn.</sub>
+
+---
+
+## 📑 Table of Contents
+
+- [Why SHINE](#why-shine)
+- [Business Value at a Glance](#business-value-at-a-glance)
+- [At a Glance](#at-a-glance)
+- [How It Works](#how-it-works)
+- [What's Included](#whats-included)
+- [Quick Install](#quick-install)
+- [The SHINE Framework](#the-shine-framework)
+- [Skill Catalogue (138)](#skill-catalogue-138)
+- [Agent Roster (39)](#agent-roster-39)
+- [Plugins & MCP Servers](#plugins--mcp-servers)
+- [Agency Workflows](#agency-workflows)
+- [Hooks](#hooks)
+- [Global Memory](#global-memory)
+- [Customization](#customization)
+- [Documentation](#documentation)
+- [Uninstall](#uninstall)
+- [Philosophy](#philosophy)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## 🚀 Why SHINE
+
+Most Claude Code setups treat the AI as an assistant that needs manual tool selection on every turn. SHINE flips the model:
+
+- **One brain** — a global `CLAUDE.md` with 20 decision rules that map *intent* → *tool chain* automatically
+- **One memory** — a typed `MEMORY.md` index shared across every project, so context isn't rebuilt from scratch each session
+- **Agency-calibrated** — built for consultants, PMs, and digital agencies: GDPR/cookie audits, SEO/MarTech checks, client-comms in Italian/French/English, `CLIENT | Topic` email format, factual-RAG discipline
+- **Auto-updating** — `integration-sync.js` rewrites the relevant section of `CLAUDE.md` every time a plugin is installed or removed
+- **Reversible** — atomic backup on install, one-command uninstall, `--dry-run` everywhere
+
+### The dependency chain
+
+```
+settings.json  →  Global Memory  →  CLAUDE.md  →  Hooks
+ (plugins,        (typed index,     (20 rules,     (lifecycle
+  env vars,         shared           orchestrates    automation
+  telemetry)        across           every tool)     & guards)
+                    projects)
+```
+
+---
+
+## 📊 At a Glance
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║           ✨  SHINE Claude Code Framework  v1.0.0  ✨           ║
+╠══════════════════════════════════════════════════════════════════╣
+║  39 agents  ·  138 skills  ·  7 hooks  ·  20 decision rules     ║
+║  16 plugins ·  5 docs      ·  2 statuslines ·  CI validated     ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+| Metric | Count | Breakdown |
+|---|---:|---|
+| 🤖 **Agents** | **39** | 21 engineering + 18 agency |
+| 🧩 **Skills** | **138** | 61 core · 17 early-agency · 10×4 new-agency · 8 ops · 6 data · 7 brand/misc |
+| 🪝 **Hooks** | **7** | 3 SessionStart · 2 PreToolUse · 1 PostToolUse · 1 PreCompact |
+| 📜 **Decision rules** | **20** | 15 dev-centric + 5 agency (§16–§20) |
+| 🔌 **Plugins** | **16** | 11 official · 2 LSP · 3 third-party |
+| 📚 **Docs** | **5** | ARCHITECTURE · HOW-IT-WORKS · CUSTOMIZATION · PLUGINS · AGENCY-WORKFLOWS |
+| 🛡️ **Guardrails** | **All-session** | RAG discipline · never-auto-send · PII-aware · atomic backup |
+| 🌍 **Languages** | **4** | 🇮🇹 IT · 🇫🇷 FR · 🇬🇧 EN · 🇪🇸 ES |
+
+### Skill distribution
+
+```
+core SHINE         ████████████████████████████████████████████████████████  61  (44%)
+early agency       ███████████████                                           17  (12%)
+marketing/content  █████████                                                 10   (7%)
+sales/outreach     █████████                                                 10   (7%)
+consulting/strategy█████████                                                 10   (7%)
+tech/dev           █████████                                                 10   (7%)
+ops/PM             ███████                                                    8   (6%)
+data/analytics     █████                                                      6   (4%)
+brand + misc       ██████                                                     7   (5%)
+                                                                            ───
+                                                                            138
+```
+
+### Agent distribution
+
+```
+engineering        █████████████████████                                     21  (54%)
+client & account   ████                                                       4  (10%)
+sales & growth     █████                                                      5  (13%)
+content & brand    ███                                                        3   (8%)
+MarTech & data     ████                                                       4  (10%)
+compliance & ops   ██                                                         2   (5%)
+                                                                             ──
+                                                                             39
+```
+
+---
+
+## 🔧 How It Works
+
+![SHINE architecture diagram](docs/architecture.svg)
+
+<sub>👀 Diagram: `docs/architecture.svg` — dependency chain from `settings.json` → Global Memory → `CLAUDE.md` (20 rules, with §16–§20 agency pills highlighted) → Execution layer (138 skills · 39 agents · 16 plugins) → 7 hooks (SessionStart / PreToolUse / PostToolUse / PreCompact). Always-on guardrails rail at the bottom: RAG discipline, never-auto-send, PII-aware, atomic backup, 🇮🇹🇫🇷🇬🇧🇪🇸 tone, reversible install.</sub>
+
+Full runtime walkthrough in [`docs/HOW-IT-WORKS.md`](docs/HOW-IT-WORKS.md).
+
+**Example flow — "draft a reply to Jamie about ACME link building":**
+1. Rule #17 fires (client `ACME` + communication verb).
+2. `memory/client-acme.md` + `memory/style-email-it.md` load.
+3. Gmail MCP fetches the last thread.
+4. `/draft-email` skill produces subject `ACME | <topic>`, warm IT opening, bullet body, correct CC list.
+5. Output is a **draft** — never auto-sent (CLAUDE.md §16 + skill `<guardrails>`).
+
+**Example flow — "there's a bug in the checkout flow":**
+1. Rule #3 fires (debug intent).
+2. `shine-debugger` agent delegated via Task tool — own context window.
+3. Serena + Grep locate the relevant symbols; Read inspects them.
+4. Agent returns a 5-section report: Summary / Details / Sources / Open questions / Next step.
+5. User approves → `shine-executor` implements the fix.
+
+No manual tool selection. The rules handle orchestration.
+
+---
+
+## 🚦 How to Use — Journey Map
+
+![SHINE how-to-use journey map](docs/how-to-use.svg)
+
+<sub>👀 Diagram: `docs/how-to-use.svg` — four canonical end-to-end journeys read top-to-bottom along a shared timeline (**① your prompt → ② rule fires → ③ memory + MCP loaded → ④ skill + agent → ⑤ artifact → ⑥ you approve**). Columns: **Proposal** (CONTOSO · Rule §19 · MoSCoW + MD + 15%), **Client Email** (ACME · Rule §17 · warm IT draft in Gmail), **Debug** (Rule §3 · debugger agent returns a 5-section report before any fix), **Lead Enrichment** (Rule §20 · only verified data, "inferred — unverified" label where needed). Always-on guardrails band on top: RAG, dry-run, GDPR, tone, cite-only-fetched, stop-on-tool-failure, PreToolUse secret block.</sub>
+
+---
+
+## 📦 What's Included
+
+| Component | Count | Description |
+|-----------|-------|-------------|
+| **`CLAUDE.md`** | 1 | Global instructions — 16 sections, **20 decision rules** (5 agency-specific) |
+| **`MEMORY.md`** | 1 typed index | Typed persistent memory (preference / client / project / style / external) |
+| **SHINE Agents** | **39** | 21 core engineering (planner, executor, verifier, debugger, auditors, researchers) + 18 agency (client-researcher, proposal-writer, gdpr-analyst, seo-strategist, martech-architect, copywriter, …) |
+| **SHINE Skills** | **138** | 61 core SHINE + 17 early agency + 10 marketing · 10 sales · 10 consulting · 10 tech · 8 ops · 6 data · 4 brand · 3 misc |
+| **Hooks** | 7 | SessionStart (3) · PreToolUse (2) · PostToolUse (1) · PreCompact (1) |
+| **Plugins & MCP** | 16 plugins + 4 marketplaces | serena, context7, playwright, superpowers, code-simplifier, ralph-loop, typescript-lsp, pyright-lsp, pyright, basedpyright, supabase, agent-sdk-dev, claude-code-setup, ui-ux-pro-max, claude-mem, arize-skills |
+| **Statusline** | 2 variants | `.js` (cross-platform, no deps) + `.sh` (pure bash, no `jq` required) — shows model · dir · branch · active-client · context size |
+| **Total slash commands** | **138** | All skills are user-invocable via `/<skill-name>` |
+
+---
+
+## ⚡ Quick Install
+
+```bash
+git clone https://github.com/diShine-digital-agency/shine-claude-code-framework.git
+cd shine-claude-code-framework
+
+# Preview what will happen (no changes made):
+./install.sh --dry-run
+
+# Install:
+./install.sh
+```
+
+**What the installer does (in order):**
+1. Pre-flight checks (`claude`, `node`, `git`)
+2. Atomic backup of existing `~/.claude/` → `~/.claude-backup-<timestamp>/`
+3. Copies `CLAUDE.md`, agents, skills, hooks, statusline
+4. Seeds `MEMORY.md` template (never overwrites an existing one)
+5. Creates `settings.json` from template (never overwrites an existing one)
+6. Installs 20+ plugins via `claude plugins install` (idempotent — skips already-installed)
+7. Prints next-steps checklist
+
+### Install flags
+
+| Flag | Effect |
+|------|--------|
+| `--dry-run` | Show every action, change nothing |
+| `--no-plugins` | Skip the `claude plugins install` loop (for air-gapped / offline setups) |
+| `--no-backup` | Skip the `~/.claude-backup-*` step (dangerous — use only in fresh installs) |
+| `--no-symlink` | Don't symlink project memory dirs to global memory (opt-out) |
+| `--non-interactive` | Fail instead of prompting when a decision is needed |
+| `--help` | Show all flags |
+
+### After install
+
+```bash
+# Verify:
+claude
+# Inside Claude Code:
+/shine-help
+```
+
+---
+
+## 🎯 The SHINE Framework
+
+SHINE is a 5-phase methodology baked into the agent roster, replacing the generic upstream cycle with one calibrated for agency and consulting work.
+
+### 🛠️ Core engineering track (21 agents)
+
+| Phase | Meaning | Key agents | Key skills |
+|-------|---------|-----------|------------|
+| **S**trategize | Gather context, brainstorm, define the ask | `shine-project-researcher`, `shine-user-profiler`, `shine-advisor-researcher` | `/shine-new-project`, `/shine-discuss-phase` |
+| **H**andle | Plan the work in atomic, reviewable phases | `shine-planner`, `shine-plan-checker`, `shine-roadmapper`, `shine-phase-researcher` | `/shine-plan-phase`, `/shine-research-phase` |
+| **I**mplement | Execute with atomic commits and wave parallelism | `shine-executor`, `shine-codebase-mapper` | `/shine-execute-phase`, `/shine-do`, `/shine-quick` |
+| **N**avigate | Keep state across sessions, handle handoff | `shine-assumptions-analyzer`, `shine-integration-checker`, `shine-research-synthesizer` | `/shine-pause-work`, `/shine-resume-work`, `/shine-progress` |
+| **E**valuate | Verify, audit, harden, and ship | `shine-verifier`, `shine-security-auditor`, `shine-ui-auditor`, `shine-ui-checker`, `shine-ui-researcher`, `shine-doc-verifier`, `shine-doc-writer`, `shine-nyquist-auditor`, `shine-debugger` | `/shine-verify-work`, `/shine-audit-milestone`, `/shine-ship` |
+
+### 🏢 Agency track (18 agents)
+
+For client-facing work — proposals, campaigns, outreach, compliance, PM:
+
+| Cluster | Agents |
+|---|---|
+| **Client & account** | `shine-client-researcher`, `shine-account-manager`, `shine-pm-coordinator`, `shine-persona-researcher` |
+| **Sales & growth** | `shine-sales-strategist`, `shine-lead-scorer`, `shine-competitor-scout`, `shine-proposal-writer`, `shine-copywriter` |
+| **Content & brand** | `shine-brand-voice-auditor`, `shine-content-editor`, `shine-translator` |
+| **MarTech & data** | `shine-martech-architect`, `shine-seo-strategist`, `shine-data-analyst`, `shine-crm-operator` |
+| **Compliance & ops** | `shine-gdpr-analyst`, `shine-retro-facilitator` |
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full agent × skill matrix and [`docs/HOW-IT-WORKS.md`](docs/HOW-IT-WORKS.md) for the runtime walkthrough.
+
+---
+
+## 🧩 Skill Catalogue (138)
+
+Every skill is a slash command: `/skill-name [args]`. Grouped by category.
+
+<details>
+<summary><b>Core SHINE (61)</b> — planning, execution, verification, docs, UI review</summary>
+
+Naming pattern: `/shine-*` — the engineering spine of the framework (plan, research, execute, verify, audit, ship). Full list under `skills/shine-*/SKILL.md`.
+
+</details>
+
+<details>
+<summary><b>Early agency (17)</b> — client lifecycle essentials</summary>
+
+| Skill | Purpose |
+|---|---|
+| `/proposal` | Commercial proposal (MoSCoW, MD, 15% discount) |
+| `/draft-email` | Client email in Kevin's style (IT/EN/FR) |
+| `/gdpr-audit` | Privacy check on any deliverable |
+| `/lead-enrich` | Enrich a lead list (Apollo / Hunter / local scripts) |
+| `/client-brief` · `/client-tone` | Client one-pager + tone detection |
+| `/kickoff` · `/retrospective` · `/status-report` · `/sync` | PM rituals |
+| `/seo-audit` · `/tag-audit` · `/meta-check` · `/cookie-scan` | MarTech audits |
+| `/pii-safe` · `/compliance-ai` | Compliance passes |
+| `/roi-estimate` | Budget and ROI napkin-math |
+
+</details>
+
+<details>
+<summary><b>Marketing / Content (10)</b></summary>
+
+`/content-calendar` · `/blog-post` · `/social-post` · `/newsletter` · `/landing-copy` · `/value-prop` · `/press-release` · `/case-study` · `/webinar-plan` · `/campaign-brief`
+
+</details>
+
+<details>
+<summary><b>Sales / Outreach (10)</b></summary>
+
+`/cold-email` · `/linkedin-dm` · `/follow-up` · `/sales-deck` · `/icp-define` · `/persona-build` · `/competitor-analysis` · `/pricing-page` · `/sales-call-prep` · `/sales-call-debrief`
+
+</details>
+
+<details>
+<summary><b>Consulting / Strategy (10)</b></summary>
+
+`/discovery-call` · `/swot` · `/okr-draft` · `/roadmap-draft` · `/stakeholder-map` · `/risk-register` · `/change-plan` · `/digital-maturity` · `/discovery-doc` · `/exec-summary`
+
+</details>
+
+<details>
+<summary><b>Tech / Dev (10)</b></summary>
+
+`/tech-spec` · `/api-design` · `/deploy-checklist` · `/incident-report` · `/pr-review` · `/readme-generator` · `/changelog-draft` · `/architecture-diagram` · `/migration-plan` · `/test-strategy`
+
+</details>
+
+<details>
+<summary><b>Ops / PM (8)</b></summary>
+
+`/meeting-notes` · `/weekly-plan` · `/vendor-onboarding` · `/nda-triage` · `/invoice-draft` · `/timesheet-summary` · `/capacity-plan` · `/process-doc`
+
+</details>
+
+<details>
+<summary><b>Data / Analytics (6)</b></summary>
+
+`/ga4-audit` · `/attribution-model` · `/dashboard-spec` · `/kpi-tree` · `/ab-test-plan` · `/data-contract`
+
+</details>
+
+<details>
+<summary><b>Brand / Design + Misc (7)</b></summary>
+
+`/brand-voice` · `/naming` · `/logo-brief` · `/design-crit` · `/rfp-response` · `/translate` · `/learning-loop`
+
+</details>
+
+---
+
+## 🤖 Agent Roster (39)
+
+Agents are delegated via the Task tool. Each one returns a 5-section report: **Summary / Details / Sources / Open questions / Next step.**
+
+### Engineering track (21)
+
+| Cluster | Agents |
+|---|---|
+| 🧭 **Plan & research** | `shine-planner`, `shine-plan-checker`, `shine-roadmapper`, `shine-phase-researcher`, `shine-project-researcher`, `shine-research-synthesizer`, `shine-advisor-researcher` |
+| 🏗️ **Execute & navigate** | `shine-executor`, `shine-codebase-mapper`, `shine-assumptions-analyzer`, `shine-integration-checker` |
+| ✅ **Verify & audit** | `shine-verifier`, `shine-debugger`, `shine-security-auditor`, `shine-nyquist-auditor`, `shine-doc-verifier`, `shine-doc-writer`, `shine-ui-auditor`, `shine-ui-checker`, `shine-ui-researcher`, `shine-user-profiler` |
+
+### Agency track (18)
+
+| Cluster | Agents |
+|---|---|
+| 🧑‍💼 **Client & account** | `shine-client-researcher`, `shine-account-manager`, `shine-pm-coordinator`, `shine-persona-researcher` |
+| 📈 **Sales & growth** | `shine-sales-strategist`, `shine-lead-scorer`, `shine-competitor-scout`, `shine-proposal-writer`, `shine-copywriter` |
+| ✍️ **Content & brand** | `shine-brand-voice-auditor`, `shine-content-editor`, `shine-translator` |
+| 📊 **MarTech & data** | `shine-martech-architect`, `shine-seo-strategist`, `shine-data-analyst`, `shine-crm-operator` |
+| 🛡️ **Compliance & ops** | `shine-gdpr-analyst`, `shine-retro-facilitator` |
+
+---
+
+## 🔌 Plugins & MCP Servers
+
+All plugins are installed via `claude plugins install` during setup (skip with `--no-plugins`). Full map at [`docs/PLUGINS.md`](docs/PLUGINS.md).
+
+### Official marketplace (`claude-plugins-official`) — 11 plugins
+| Plugin | Purpose |
+|--------|---------|
+| **serena** | Semantic code navigation (LSP symbols, references, rename) |
+| **context7** | Live library / framework docs (preferred over web search for SDKs) |
+| **playwright** | Browser automation, screenshots, E2E |
+| **superpowers** | Productivity multi-tool pack (brainstorm / TDD / parallel agents) |
+| **code-simplifier** | Refactor-for-readability pass |
+| **ralph-loop** | Recurring / long-running agentic loops |
+| **typescript-lsp** · **pyright-lsp** | Type-aware operations (TS / Python) |
+| **supabase** | Database, auth, storage, edge functions |
+| **agent-sdk-dev** | Claude Agent SDK scaffolding |
+| **claude-code-setup** | Setup helpers (one-shot at install) |
+
+### LSP marketplace (`claude-code-lsps`) — 2 plugins
+| Plugin | Source | Purpose |
+|--------|--------|---------|
+| **pyright** · **basedpyright** | [Piebald-AI/claude-code-lsps](https://github.com/Piebald-AI/claude-code-lsps) | Python LSP (stricter fork) |
+
+### Third-party marketplaces — 3 plugins
+| Plugin | Source | Purpose |
+|--------|--------|---------|
+| **ui-ux-pro-max** | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | UI/UX audit skills, style catalog |
+| **claude-mem** | [thedotmack/claude-mem](https://github.com/thedotmack/claude-mem) | Cross-session memory helpers |
+| **arize-skills** | [Arize-ai/arize-skills](https://github.com/Arize-ai/arize-skills) | LLM observability, tracing, experiments |
+
+### MCP servers (user-scoped, not bundled)
+
+SHINE's decision rules route to these when connected — nothing is hard-required. Full map in [`docs/PLUGINS.md`](docs/PLUGINS.md#2-mcp-servers-expected-by-the-decision-rules):
+
+Gmail · Google Calendar · Asana · Apollo.io · Hunter.io · Perplexity · Exa · Firecrawl · Apify · Ahrefs · Supabase · Sentry · GitHub · Filesystem · Desktop Commander · context7 · markitdown · PDF/Word/PowerPoint.
+
+Missing MCP → SHINE states the gap and offers a degraded path. Never fabricates.
+
+### diShine companion tools (auto-recommended by `CLAUDE.md`)
+
+When the task matches the trigger, SHINE proactively suggests diShine's own open-source tools:
+
+| When the user mentions… | SHINE recommends |
+|------|------------------|
+| GDPR, cookie compliance, consent | [cookie-audit](https://github.com/diShine-digital-agency/cookie-audit) |
+| GTM, tag governance, analytics audit | [tag-auditor](https://github.com/diShine-digital-agency/tag-auditor) |
+| SEO tags, link previews, Open Graph | [meta-inspector](https://github.com/diShine-digital-agency/meta-inspector) |
+| Lighthouse, performance trends | [lighthouse-dashboard](https://github.com/diShine-digital-agency/lighthouse-dashboard) |
+| AI policy, EU AI Act, DPIA | [ai-compliance-framework](https://github.com/diShine-digital-agency/ai-compliance-framework) |
+| On-site diagnostic audit | [prismo](https://github.com/diShine-digital-agency/prismo) |
+| PII anonymization before LLM ingestion | [dishine-data-safe-usb](https://github.com/diShine-digital-agency/dishine-data-safe-usb) |
+| Confidential audio transcription | [dishine-boardroom-ear](https://github.com/diShine-digital-agency/dishine-boardroom-ear) |
+
+> **Bring-your-own orchestration**: SHINE does **not** bundle advanced orchestration MCP servers (agent pools, neural tools, coordination). If you need those, install them yourself — `CLAUDE.md` has a BYO section documenting the pattern.
+
+---
+
+## 🏢 Agency Workflows
+
+SHINE ships with **5 agency-specific decision rules** that ordinary dev-centric setups don't cover. See [`docs/AGENCY-WORKFLOWS.md`](docs/AGENCY-WORKFLOWS.md) for full detail.
+
+1. **Factual / RAG discipline** — every factual claim must come from a retrieved source in the current session. Zero hallucination on company names, people, emails, URLs. Uncertain facts trigger _"I don't have a verified source — want me to search?"_
+2. **Client-comms tone switching** — detects the language (IT / FR / EN / ES) and applies the appropriate register. Italian → warm opening + structured bullets + `CLIENT | Topic` subject + internal CC logic. English → concise, agency-neutral.
+3. **GDPR / compliance guard** — when the task involves cookies, tracking, personal data, or consent, routes through `cookie-audit` + `ai-compliance-framework` before drafting.
+4. **Proposal assembly** — `@create-proposal` pattern: MoSCoW structuring + MD estimates (8h per MD) + ~15% discount option + Italian output by default.
+5. **Lead enrichment** — `@lead-enrichment` pattern: local scripts first → Apollo → Apify, with structured CSV/Markdown output and pattern-inferred emails labelled as _"inferred — not verified"_.
+
+---
+
+## 🪝 Hooks
+
+7 hook files — all wired in `settings.json` with short timeouts and fail-open defaults. The one exception is `shine-prompt-guard.js`, which fails **closed** (exit 2) to abort writes that look like secrets.
+
+| Hook | Trigger | What it does |
+|------|---------|--------------|
+| `global-memory-symlink.sh` | SessionStart | Symlinks project `./memory/` → `~/.claude/memory/` (opt-out with `./install.sh --no-symlink` or `touch ~/.claude/.no-memory-symlink`) |
+| `shine-check-update.js` | SessionStart | Non-blocking GitHub release check, cached 24h. Disable via `SHINE_DISABLE_UPDATE_CHECK=1` |
+| `integration-sync.js` | SessionStart | Rewrites the `<!-- shine:plugins:begin -->` block inside `CLAUDE.md` with the current plugins + MCP servers |
+| `shine-context-monitor.js` | PostToolUse (Bash\|Edit\|Write\|MultiEdit\|Agent\|Task) | Warns at 800 KB / 1.6 MB transcript size. Thresholds tunable (`SHINE_CONTEXT_SOFT_KB`, `SHINE_CONTEXT_HARD_KB`) |
+| `shine-prompt-guard.js` | PreToolUse (Write\|Edit) | **Blocks** writes matching `.env`, `*.pem`, or API-key patterns (OpenAI / Anthropic / GitHub / AWS / Google / Stripe / Slack). Exits 2. |
+| `shine-read-guard.js` | PreToolUse (Write\|Edit) | **Warns** on writes into `node_modules/`, `dist/`, `coverage/`, lockfiles, `*.min.js`. Exits 0 |
+| `shine-precompact.js` | PreCompact | Snapshots CWD + last tool + timestamp to `~/.claude/sessions/precompact-<ts>.md` (retention = 20) |
+
+All hooks support an opt-out env var (`SHINE_DISABLE_<NAME>=1`). See [`docs/CUSTOMIZATION.md`](docs/CUSTOMIZATION.md#7-opt-outs-env-vars).
+
+---
+
+## 🧠 Global Memory
+
+Memory is **global** (shared across projects), not project-scoped. The `global-memory-symlink.sh` hook symlinks each project's `memory/` directory to `~/.claude/memory/` on session start.
+
+### Typed memory entries
+
+Every memory file has frontmatter telling SHINE what it is:
+
+```markdown
+---
+type: client            # preference | client | project | style | external
+name: CONTOSO Italia
+last_updated: 2026-04-14
+tags: [seo, salesforce, martech]
+---
+
+# CONTOSO — working notes
+Contact: Sam Taylor (sam.taylor@contoso.example)
+Budget: flat fee, SEO + tech-SEO
+CRM: Salesforce
+…
+```
+
+SHINE reads these files at session start, filters by `type` based on the active task, and injects only the relevant ones into context.
+
+---
+
+## ⚙️ Customization
+
+See [`docs/CUSTOMIZATION.md`](docs/CUSTOMIZATION.md) for the full guide. The essentials:
+
+1. **`~/.claude/settings.json`** — set `ANTHROPIC_BASE_URL` (leave blank for official API) and, _optionally_, the OTEL vars if you self-host telemetry. Telemetry is **disabled by default**.
+2. **`~/.claude/CLAUDE.md`** — adjust or add decision rules. The `integration-sync.js` hook owns the plugins section — don't hand-edit between the `<!-- shine:plugins:begin -->` and `<!-- shine:plugins:end -->` markers.
+3. **`~/.claude/memory/`** — add typed memory files for your clients, preferences, and project context.
+
+---
+
+## 📚 Documentation
+
+Five long-form docs under `docs/`. Each answers a specific question:
+
+| Doc | What it answers |
+|---|---|
+| [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Where every file lives, why, and which layer owns it |
+| [`HOW-IT-WORKS.md`](docs/HOW-IT-WORKS.md) | Runtime narrative — SessionStart → decision rules → tool-use → PreCompact |
+| [`CUSTOMIZATION.md`](docs/CUSTOMIZATION.md) | How to add skills, agents, hooks, memory; all env-var opt-outs |
+| [`PLUGINS.md`](docs/PLUGINS.md) | Plugins shipped, MCPs expected per rule, missing-integration behaviour |
+| [`AGENCY-WORKFLOWS.md`](docs/AGENCY-WORKFLOWS.md) | 16 end-to-end playbooks (email, proposal, lead enrich, SEO audit, cookies, cold outbound, …) |
+
+Governance & ops:
+
+| File | Purpose |
+|---|---|
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | PR checklist, commit style, release process |
+| [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) | Community standards |
+| [`SECURITY.md`](./SECURITY.md) | Vulnerability reporting (security@dishine.it) |
+| [`CHANGELOG.md`](./CHANGELOG.md) | Version history |
+| [`.github/workflows/validate.yml`](./.github/workflows/validate.yml) | CI: bash + node syntax, JSON validity, frontmatter, dead-ref, secret scan |
+
+### Decision-rule cheat sheet
+
+The 20 rules in `CLAUDE.md` at a glance:
+
+| # | Trigger | Routes to |
+|---:|---|---|
+| 1 | plan / strategy / roadmap + tech scope | `shine-planner` |
+| 2 | implement / build / code | `shine-executor` + Serena / LSP |
+| 3 | bug / error / broken | `shine-debugger` (scientific method) |
+| 4 | write to risky path | Stop, confirm |
+| 5 | refactor / simplify | `code-simplifier` |
+| 6 | docs / README / changelog | `shine-doc-writer` · `/readme-generator` · `/changelog-draft` |
+| 7 | review PR / code review | `shine-verifier` · `/pr-review` |
+| 8 | SEO / GSC / Ahrefs | `shine-seo-strategist` · `/seo-audit` · `/tag-audit` |
+| 9 | project status / Asana / handoff | `shine-pm-coordinator` · `/status-report` |
+| 10 | schedule / calendar | GCal MCP |
+| 11 | library / framework question | `context7` plugin |
+| 12 | browser / screenshot / E2E | `playwright` plugin |
+| 13 | incident / outage / Sentry | `shine-debugger` + Sentry MCP |
+| 14 | DB / Supabase / SQL | `supabase` plugin |
+| 15 | long-running investigation | Spawn sub-agent via Task |
+| **16** | **any factual claim** | **RAG — never fabricate** |
+| **17** | **client name + comm verb** | **Load client memory → `/draft-email`** |
+| **18** | **PII / personal data** | **`shine-gdpr-analyst` → `/gdpr-audit`** |
+| **19** | **proposta / proposal** | **`/proposal` (MoSCoW, MD, 15%)** |
+| **20** | **lead list / outbound** | **`/lead-enrich` + Apollo/Hunter** |
+
+Rules 16–20 are the agency-specific additions that distinguish SHINE from a dev-only setup.
+
+---
+
+## 🗑️ Uninstall
+
+```bash
+./uninstall.sh          # restores most recent ~/.claude-backup-* snapshot
+./uninstall.sh --purge  # removes ~/.claude/ entirely (asks for confirmation)
+```
+
+---
+
+## 🌟 Philosophy
+
+> "At least 40% of all businesses will die in the next ten years… if they don't figure out how to change their entire company to accommodate new technologies."  
+> _— John Chambers, former CEO of Cisco Systems_
+
+SHINE is diShine's take on how a creative tech agency should run Claude Code in production:
+
+- **Transparency** — every rule, hook, and agent is readable plaintext
+- **Pragmatism** — every tool solves a real problem we or our clients actually faced
+- **Accessibility** — works on macOS and Linux out of the box; Windows via WSL
+- **Accountability** — atomic backups, `--dry-run` everywhere, reversible install
+- **Factuality** — built-in RAG discipline; hallucination is not acceptable on client work
+
+---
+
+## 🤝 Contributing
+
+We welcome issues and pull requests. Read [`CONTRIBUTING.md`](./CONTRIBUTING.md) and our [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) first.
+
+For vulnerabilities, follow our [`SECURITY.md`](./SECURITY.md) — do not open public issues.
+
+---
+
+## 📜 License
+
+[CC0 1.0 Universal](./LICENSE) — public domain dedication. Use it, fork it, ship it.
+
+---
+
+## 📞 Connect
+
+| | |
+|---|---|
+| **Agency Website** | [dishine.it](https://dishine.it/) |
+| **Founder** | [Kevin Escoda](https://kescoda.com/) |
+| **LinkedIn** | [diShine Digital Agency](https://linkedin.com/company/100682596) |
+| **Email** | [kevin@dishine.it](mailto:kevin@dishine.it) |
+| **Languages** | English · French · Italian · Spanish |
+
+---
+
+_Made with ❤️ by the diShine team in Milan, Italy_  
+_🇫🇷 Dreamed in French · 🇮🇹 Built in Italy · 🇬🇧 Shipped in English_
