@@ -29,7 +29,7 @@ Built by [diShine Digital Agency](https://dishine.it).
 
 ## 💼 Business value map
 
-![SHINE business value map](docs/business-value.svg)
+![SHINE business value map](docs/business-value2.svg)
 
 <sub>👀 Diagram: `docs/business-value.svg` — three bands: **① Business input** (brief, inbox thread, lead list, bug ticket, campaign idea, GDPR question) → **② SHINE engine** (29 decision rules · typed memory · 146 skills · 45 agents · 7 hooks · 60+ MCP servers · always-on guardrails) → **③ Business deliverables** (proposal, email draft, lead CSV, fix + 5-section report, campaign brief, GDPR verdict). ROI band: 3–8× faster drafting, on-brand every time, GDPR-native, institutional memory that survives staff churn.</sub>
 
@@ -139,7 +139,7 @@ compliance & ops   ██                                                       
 
 ## 🔧 How it works
 
-![SHINE architecture diagram](docs/architecture.svg)
+![SHINE architecture diagram](docs/architecture2.svg)
 
 <sub>👀 Diagram: `docs/architecture.svg` — dependency chain from `settings.json` → Global Memory → `CLAUDE.md` (29 rules, with §16–§20 agency pills + §21 tiered fallback + §22–§29 MCP-capability rules highlighted) → Execution layer (146 skills · 45 agents · 16 plugins · 60+ MCP servers) → 7 hooks (SessionStart / PreToolUse / PostToolUse / PreCompact). Always-on guardrails rail at the bottom: RAG discipline, never-auto-send, PII-aware, tiered fallback, atomic backup, 🇮🇹🇫🇷🇬🇧🇪🇸 tone, reversible install.</sub>
 
@@ -165,7 +165,7 @@ No manual tool selection. The rules handle orchestration.
 
 ## 🚦 How to use: journey map
 
-![SHINE how-to-use journey map](docs/how-to-use.svg)
+![SHINE how-to-use journey map](docs/how-to-use2.svg)
 
 <sub>👀 Diagram: `docs/how-to-use.svg` — four canonical end-to-end journeys read top-to-bottom along a shared timeline (**① your prompt → ② rule fires → ③ memory + MCP loaded → ④ skill + agent → ⑤ artifact → ⑥ you approve**). Columns: **Proposal** (CONTOSO · Rule §19 · MoSCoW + MD + 15%), **Client Email** (ACME · Rule §17 · warm IT draft in Gmail), **Debug** (Rule §3 · debugger agent returns a 5-section report before any fix), **Lead Enrichment** (Rule §20 · only verified data, "inferred — unverified" label where needed). Always-on guardrails band on top: RAG, dry-run, GDPR, tone, cite-only-fetched, stop-on-tool-failure, PreToolUse secret block.</sub>
 
