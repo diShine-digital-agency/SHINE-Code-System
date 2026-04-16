@@ -38,14 +38,13 @@ Built by [diShine Digital Agency](https://dishine.it).
 ## 📑 Table of contents
 
 - [Why SHINE](#why-shine)
-- [Business Value at a Glance](#business-value-at-a-glance)
 - [At a Glance](#at-a-glance)
 - [How It Works](#how-it-works)
 - [What's Included](#whats-included)
 - [Quick Install](#quick-install)
 - [The SHINE Framework](#the-shine-framework)
-- [Skill Catalogue (138)](#skill-catalogue-138)
-- [Agent Roster (39)](#agent-roster-39)
+- [Skill Catalogue (149)](#skill-catalogue-149)
+- [Agent Roster (45)](#agent-roster-45)
 - [Plugins & MCP Servers](#plugins--mcp-servers)
 - [Agency Workflows](#agency-workflows)
 - [Hooks](#hooks)
@@ -87,18 +86,18 @@ settings.json  →  Global Memory  →  CLAUDE.md  →  Hooks
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║           ✨  SHINE Claude Code Framework  v1.0.0  ✨           ║
+║           ✨  SHINE Claude Code Framework  v2.0.0  ✨           ║
 ╠══════════════════════════════════════════════════════════════════╣
-║  45 agents  ·  146 skills  ·  7 hooks  ·  29 decision rules     ║
+║  45 agents  ·  149 skills ·  11 hooks  ·  29 decision rules     ║
 ║  16 plugins ·  60+ MCP map ·  6 docs   ·  20 capability tiers   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
 | Metric | Count | Breakdown |
 |---|---:|---|
-| 🤖 **Agents** | **45** | 21 engineering + 18 agency + 6 MCP-capability (web-researcher, data-engineer, vulnerability-scanner, chart-builder, sandbox-runner, infra-ops) |
-| 🧩 **Skills** | **146** | 61 core · 17 early-agency · 10×4 new-agency · 8 ops · 6 data · 7 brand/misc · 8 MCP-capability |
-| 🪝 **Hooks** | **7** | 3 SessionStart · 2 PreToolUse · 1 PostToolUse · 1 PreCompact |
+| 🤖 **Agents** | **45** | 21 engineering + 18 agency + 6 MCP-capability (web-researcher, data-engineer, vulnerability-scanner, chart-builder, sandbox-runner, infra-ops). _Plus 7 on-demand partial files (agent bodies split for token efficiency)._ |
+| 🧩 **Skills** | **149** | 42 core · 17 early-agency · 10 marketing · 10 sales · 11 consulting · 10 tech · 8 ops · 7 data · 4 brand · 30 misc |
+| 🪝 **Hooks** | **11** | 3 SessionStart · 2 UserPromptSubmit · 2 PreToolUse · 1 PostToolUse · 1 PreCompact · 1 Stop · 1 SessionEnd |
 | 📜 **Decision rules** | **29** | 15 dev-centric + 5 agency (§16–§20) + 1 tiered fallback (§21) + 8 MCP-capability (§22–§29) |
 | 🔌 **Plugins** | **16** | 11 official · 2 LSP · 3 third-party |
 | 🌐 **MCP capability map** | **60+** | 20 categories · Tier 1 free/local · Tier 2 freemium · Tier 3 paid |
@@ -109,31 +108,37 @@ settings.json  →  Global Memory  →  CLAUDE.md  →  Hooks
 ### Skill distribution
 
 ```
-core SHINE         ████████████████████████████████████████████████████████  61  (44%)
-early agency       ███████████████                                           17  (12%)
+core SHINE         ████████████████████████████████████                      42  (28%)
+early agency       ██████████████                                            17  (11%)
 marketing/content  █████████                                                 10   (7%)
 sales/outreach     █████████                                                 10   (7%)
-consulting/strategy█████████                                                 10   (7%)
+consulting/strategy██████████                                                11   (7%)
 tech/dev           █████████                                                 10   (7%)
-ops/PM             ███████                                                    8   (6%)
-data/analytics     █████                                                      6   (4%)
-brand + misc       ██████                                                     7   (5%)
-                                                                            ───
-                                                                            138
+ops/PM             ███████                                                    8   (5%)
+data/analytics     ██████                                                     7   (5%)
+brand              ████                                                       4   (3%)
+misc / cross-cut   ██████████████████████████                                30  (20%)
+                                                                           ────
+                                                                            149
 ```
+
+<sub>Source of truth: run `node shine/bin/shine-tools.cjs index-skills` — writes `skills/INDEX.md` with the current breakdown.</sub>
 
 ### Agent distribution
 
 ```
-engineering        █████████████████████                                     21  (54%)
-client & account   ████                                                       4  (10%)
-sales & growth     █████                                                      5  (13%)
-content & brand    ███                                                        3   (8%)
-MarTech & data     ████                                                       4  (10%)
-compliance & ops   ██                                                         2   (5%)
+engineering            █████████████████████                                 21  (47%)
+client & account       ████                                                   4   (9%)
+sales & growth         █████                                                  5  (11%)
+content & brand        ███                                                    3   (7%)
+MarTech & data         ████                                                   4   (9%)
+compliance & ops       ██                                                     2   (4%)
+MCP-capability         ██████                                                 6  (13%)
                                                                              ──
-                                                                             39
+                                                                             45
 ```
+
+<sub>Plus **7 on-demand partial files** (`shine-planner-*`, `shine-debugger-*`, `shine-doc-writer-*`) referenced from their parent agents via `@~/.claude/agents/<file>.md` — loaded only when needed, cutting mega-agent token costs by 17–68%.</sub>
 
 ---
 
@@ -171,18 +176,18 @@ No manual tool selection. The rules handle orchestration.
 
 ---
 
-## 📦 What's included
+## 📦 What's Included
 
 | Component | Count | Description |
 |-----------|-------|-------------|
-| **`CLAUDE.md`** | 1 | Global instructions — 16 sections, **21 decision rules** (5 agency-specific + 1 tiered fallback) + 60+ MCP capability map |
+| **`CLAUDE.md`** | 1 | Global instructions — **29 decision rules** (15 dev + 5 agency §16–§20 + 1 tiered fallback §21 + 8 MCP-capability §22–§29) + 60+ MCP capability map |
 | **`MEMORY.md`** | 1 typed index | Typed persistent memory (preference / client / project / style / external) |
-| **SHINE Agents** | **39** | 21 core engineering (planner, executor, verifier, debugger, auditors, researchers) + 18 agency (client-researcher, proposal-writer, gdpr-analyst, seo-strategist, martech-architect, copywriter, …) |
-| **SHINE Skills** | **138** | 61 core SHINE + 17 early agency + 10 marketing · 10 sales · 10 consulting · 10 tech · 8 ops · 6 data · 4 brand · 3 misc |
-| **Hooks** | 7 | SessionStart (3) · PreToolUse (2) · PostToolUse (1) · PreCompact (1) |
+| **SHINE Agents** | **45** (+7 partials) | 21 core engineering (planner, executor, verifier, debugger, auditors, researchers) + 18 agency (client-researcher, proposal-writer, gdpr-analyst, seo-strategist, martech-architect, copywriter, …) + 6 MCP-capability (web-researcher, data-engineer, vulnerability-scanner, chart-builder, sandbox-runner, infra-ops). 7 on-demand partial files extracted from the mega-agents (planner, debugger, doc-writer) for token efficiency. |
+| **SHINE Skills** | **149** | 42 core SHINE + 17 early agency + 10 marketing · 10 sales · 11 consulting · 10 tech · 8 ops · 7 data · 4 brand · 30 misc/cross-cut |
+| **Hooks** | 11 | SessionStart (3) · UserPromptSubmit (2) · PreToolUse (2) · PostToolUse (1) · PreCompact (1) · Stop (1) · SessionEnd (1) |
 | **Plugins & MCP** | 16 plugins + 4 marketplaces | serena, context7, playwright, superpowers, code-simplifier, ralph-loop, typescript-lsp, pyright-lsp, pyright, basedpyright, supabase, agent-sdk-dev, claude-code-setup, ui-ux-pro-max, claude-mem, arize-skills |
 | **Statusline** | 2 variants | `.js` (cross-platform, no deps) + `.sh` (pure bash, no `jq` required) — shows model · dir · branch · active-client · context size |
-| **Total slash commands** | **146** | All skills are user-invocable via `/<skill-name>` |
+| **Total slash commands** | **149** | All skills are user-invocable via `/<skill-name>` |
 
 ---
 
@@ -285,12 +290,12 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full agent × skill m
 
 ---
 
-## 🧩 Skill catalogue (138)
+## 🧩 Skill Catalogue (149)
 
 Every skill is a slash command: `/skill-name [args]`. Grouped by category.
 
 <details>
-<summary><b>Core SHINE (61)</b> — planning, execution, verification, docs, UI review</summary>
+<summary><b>Core SHINE (42)</b> — planning, execution, verification, docs, UI review</summary>
 
 Naming pattern: `/shine-*` — the engineering spine of the framework (plan, research, execute, verify, audit, ship). Full list under `skills/shine-*/SKILL.md`.
 
@@ -364,7 +369,7 @@ Naming pattern: `/shine-*` — the engineering spine of the framework (plan, res
 
 ---
 
-## 🤖 Agent roster (39)
+## 🤖 Agent Roster (45)
 
 Agents are delegated via the Task tool. Each one returns a 5-section report: **Summary / Details / Sources / Open questions / Next step.**
 
@@ -456,7 +461,7 @@ When the task matches the trigger, SHINE proactively suggests diShine's own open
 
 ---
 
-## 🏢 Agency workflows
+## 🏢 Agency Workflows
 
 SHINE ships with **5 agency-specific decision rules** that ordinary dev-centric setups don't cover. See [`docs/AGENCY-WORKFLOWS.md`](docs/AGENCY-WORKFLOWS.md) for full detail.
 
@@ -470,7 +475,7 @@ SHINE ships with **5 agency-specific decision rules** that ordinary dev-centric 
 
 ## 🪝 Hooks
 
-8 hook files + 1 shared emitter helper — all wired in `settings.json` with short timeouts and fail-open defaults. The one exception is `shine-prompt-guard.js`, which fails **closed** (exit 2) to abort writes that look like secrets.
+11 hook files + 1 shared emitter helper — all wired in `settings.json` with short timeouts and fail-open defaults. The one exception is `shine-prompt-guard.js`, which fails **closed** (exit 2) to abort writes that look like secrets.
 
 Set `SHINE_HOOK_FORMAT=json` to switch every hook from plain stderr text to a single JSONL line per notification — useful for log pipelines. Default remains human-readable text.
 
@@ -479,17 +484,20 @@ Set `SHINE_HOOK_FORMAT=json` to switch every hook from plain stderr text to a si
 | `global-memory-symlink.sh` | SessionStart | Symlinks project `./memory/` → `~/.claude/memory/` (opt-out with `./install.sh --no-symlink` or `touch ~/.claude/.no-memory-symlink`) |
 | `shine-check-update.js` | SessionStart | Non-blocking GitHub release check, cached 24h. Disable via `SHINE_DISABLE_UPDATE_CHECK=1` |
 | `integration-sync.js` | SessionStart | Rewrites the `<!-- shine:plugins:begin -->` block inside `CLAUDE.md` with the current plugins + MCP servers |
+| `shine-client-detect.js` | UserPromptSubmit | Scans the prompt for known client slugs (files `memory/client-<slug>.md`) and pre-loads the matching client memory via `additionalContext`. Opt out with `SHINE_DISABLE_CLIENT_DETECT=1`. Tunables: `SHINE_CLIENT_DETECT_MAX` (3), `SHINE_CLIENT_DETECT_MIN_LEN` (4) |
+| `shine-tone-calibrator.js` | UserPromptSubmit | Regex-only detection of tone-correction signals (formality · length · warmth · assertiveness · jargon, EN + IT) → appends a timestamped delta to `memory/style-<client>.md` (or `style-global.md`). No prompt content captured. Opt out with `SHINE_DISABLE_TONE_CALIBRATOR=1`. Tunables: `SHINE_TONE_GLOBAL` (1), `SHINE_TONE_MAX_ENTRIES` (200) |
 | `shine-context-monitor.js` | PostToolUse (Bash\|Edit\|Write\|MultiEdit\|Agent\|Task) | Warns at 800 KB / 1.6 MB transcript size. Thresholds tunable (`SHINE_CONTEXT_SOFT_KB`, `SHINE_CONTEXT_HARD_KB`) |
 | `shine-prompt-guard.js` | PreToolUse (Write\|Edit) | **Blocks** writes matching `.env`, `*.pem`, or API-key patterns (OpenAI / Anthropic / GitHub / AWS / Google / Stripe / Slack). Exits 2. |
 | `shine-read-guard.js` | PreToolUse (Write\|Edit) | **Warns** on writes into `node_modules/`, `dist/`, `coverage/`, lockfiles, `*.min.js`. Exits 0 |
 | `shine-precompact.js` | PreCompact | Snapshots CWD + last tool + timestamp to `~/.claude/sessions/precompact-<ts>.md` (retention = 20) |
 | `shine-learning-log.js` | Stop | Appends one JSONL line per turn to `~/.claude/memory/learning-log.jsonl` (ts · cwd · last_tool · transcript_bytes). **No conversation content captured** — PII-free by design. Feeds `/shine-retro`. Trim cap `SHINE_LEARNING_LOG_MAX=10000` |
+| `shine-session-summary.js` | SessionEnd | Appends a markdown session block (window · cwd · turn count · top tools · placeholders `Task:` / `Outcome:` / `Preference observed:`) to `~/.claude/memory/learning-log.md`. Metadata only — no transcript content. Disable with `SHINE_DISABLE_SESSION_SUMMARY=1`. Trim cap `SHINE_SESSION_SUMMARY_MAX=1000` |
 
 All hooks support an opt-out env var (`SHINE_DISABLE_<NAME>=1`). See [`docs/CUSTOMIZATION.md`](docs/CUSTOMIZATION.md#7-opt-outs-env-vars).
 
 ---
 
-## 🧠 Global memory
+## 🧠 Global Memory
 
 Memory is **global** (shared across projects), not project-scoped. The `global-memory-symlink.sh` hook symlinks each project's `memory/` directory to `~/.claude/memory/` on session start.
 
@@ -550,7 +558,7 @@ Governance & ops:
 
 ### Decision-rule cheat sheet
 
-The 21 rules in `CLAUDE.md` at a glance:
+The 29 rules in `CLAUDE.md` at a glance:
 
 | # | Trigger | Routes to |
 |---:|---|---|
