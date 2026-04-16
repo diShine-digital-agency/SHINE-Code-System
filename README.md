@@ -225,6 +225,31 @@ claude
 /shine-help
 ```
 
+### First-run helpers
+
+Three `shine-tools.cjs` subcommands make onboarding and maintenance trivial. They're non-destructive — safe to run anytime.
+
+```bash
+# Generate a categorized index of all installed skills → skills/INDEX.md
+node ~/.claude/shine/bin/shine-tools.cjs index-skills
+
+# Seed 4 starter memory files (preference-* + style-email-it) — skips existing files
+node ~/.claude/shine/bin/shine-tools.cjs onboard
+
+# JSON health report — which critical files exist, counts of agents/skills/hooks/memories
+node ~/.claude/shine/bin/shine-tools.cjs doctor
+```
+
+Three new skills make onboarding, composition and retrospection first-class:
+
+- **`/shine-tour`** — interactive 6-minute guided tour. Runs 14 install-health checks, teaches the 5 SHINE pillars, demos a real read-only workflow, writes an audit trail. Includes a 20-row troubleshooting matrix for every known failure. Flags: `--section <name>`, `--check-only`, `--fix`. **Start here if you just installed.**
+- **`/shine-retro`** — reads the learning-log (written by the `shine-learning-log` hook) and proposes concrete memory updates. Write-safe: only creates `external-retro-<date>.md`, never edits existing memory files. Flags: `--days N`, `--apply`.
+- **`/shine-pipeline skill-a skill-b [skill-c ...]`** — compose skills into an ad-hoc sequential workflow with a shared scratchpad. Hard-caps at 8 steps, confirms destructive steps, warns on context-budget overflow.
+
+And a new factual-discipline convention:
+
+- **Verified-source watermark** — client deliverables with factual claims now use inline labels (`_[verified — src, date]_`, `_[unverified — pattern inferred]_`, `_[drafted — no source]_`) plus a Sources footer. Template: `shine/templates/watermark.md`. Rule source: `CLAUDE.md §16`.
+
 ---
 
 ## 🎯 The SHINE Framework
@@ -431,7 +456,9 @@ SHINE ships with **5 agency-specific decision rules** that ordinary dev-centric 
 
 ## 🪝 Hooks
 
-7 hook files — all wired in `settings.json` with short timeouts and fail-open defaults. The one exception is `shine-prompt-guard.js`, which fails **closed** (exit 2) to abort writes that look like secrets.
+8 hook files + 1 shared emitter helper — all wired in `settings.json` with short timeouts and fail-open defaults. The one exception is `shine-prompt-guard.js`, which fails **closed** (exit 2) to abort writes that look like secrets.
+
+Set `SHINE_HOOK_FORMAT=json` to switch every hook from plain stderr text to a single JSONL line per notification — useful for log pipelines. Default remains human-readable text.
 
 | Hook | Trigger | What it does |
 |------|---------|--------------|
@@ -442,6 +469,7 @@ SHINE ships with **5 agency-specific decision rules** that ordinary dev-centric 
 | `shine-prompt-guard.js` | PreToolUse (Write\|Edit) | **Blocks** writes matching `.env`, `*.pem`, or API-key patterns (OpenAI / Anthropic / GitHub / AWS / Google / Stripe / Slack). Exits 2. |
 | `shine-read-guard.js` | PreToolUse (Write\|Edit) | **Warns** on writes into `node_modules/`, `dist/`, `coverage/`, lockfiles, `*.min.js`. Exits 0 |
 | `shine-precompact.js` | PreCompact | Snapshots CWD + last tool + timestamp to `~/.claude/sessions/precompact-<ts>.md` (retention = 20) |
+| `shine-learning-log.js` | Stop | Appends one JSONL line per turn to `~/.claude/memory/learning-log.jsonl` (ts · cwd · last_tool · transcript_bytes). **No conversation content captured** — PII-free by design. Feeds `/shine-retro`. Trim cap `SHINE_LEARNING_LOG_MAX=10000` |
 
 All hooks support an opt-out env var (`SHINE_DISABLE_<NAME>=1`). See [`docs/CUSTOMIZATION.md`](docs/CUSTOMIZATION.md#7-opt-outs-env-vars).
 

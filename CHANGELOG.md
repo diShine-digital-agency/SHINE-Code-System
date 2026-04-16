@@ -6,7 +6,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [1.0.3] — 2026-04-16
+
+Release focused on discoverability, cross-session learning, skill composition, factual-discipline tooling, and an onboarding path for first-time users.
+
+### Added
+
+- **`shine-tools.cjs index-skills`** — scans `~/.claude/skills/`, parses every `SKILL.md` frontmatter, groups by inferred category (core / agency / marketing / sales / consulting / tech / ops / data / brand / misc) and writes `skills/INDEX.md` (140 entries across 10 categories).
+- **`shine-tools.cjs onboard`** — non-destructive first-run wizard. Creates 4 starter memory files (`preference-communication.md`, `preference-stack.md`, `preference-factual-rag.md`, `style-email-it.md`) plus `MEMORY.md` index. Skips any file that already exists.
+- **`shine-tools.cjs doctor`** — prints a JSON health report: `~/.claude/` presence, critical file checks, counts of agents / skills / hooks / memories. Useful for CI and support triage.
+- **`SHINE_HOOK_FORMAT=json`** — when set, every SHINE hook emits a single JSONL line per notification instead of plain stderr text. Enables ingestion into log pipelines without breaking the default human-readable mode. Applies to `shine-context-monitor`, `shine-prompt-guard`, `shine-read-guard`, `shine-check-update`, `shine-learning-log`.
+- **`hooks/_shine-hook-output.js`** — shared emitter used by all stderr-emitting hooks. Single source of truth for text / JSON formatting, fail-open semantics, and level tagging (`info` / `warn` / `block`).
+- **`hooks/shine-learning-log.js`** — new Stop-event hook. Appends one JSONL line per Claude turn to `~/.claude/memory/learning-log.jsonl` with `ts`, `cwd`, `last_tool`, `transcript_bytes`, `event`. No conversation content is ever captured — log is PII-free by design. LRU-trims to `SHINE_LEARNING_LOG_MAX` (default 10000 lines). Controls: `SHINE_DISABLE_LEARNING_LOG=1`.
+- **`skills/shine-retro/SKILL.md`** — reads the learning log, aggregates tool usage / cwd coverage / long-session counts, and proposes concrete memory updates. Write-safe: only creates `external-retro-<date>.md`, never edits existing memory files.
+- **`skills/shine-pipeline/SKILL.md`** — compose skills into an ad-hoc sequential workflow with a shared markdown scratchpad. Hard 8-step cap, destructive-step confirmation, context-budget awareness.
+- **`skills/shine-tour/SKILL.md`** — interactive 6-minute guided tour for first-time users. Runs 14 install-health checks with copy-paste fixes, teaches the 5 SHINE pillars (rules / memory / skills / agents / hooks), demos a real read-only workflow, writes an audit trail to `~/.claude/sessions/tour-<ts>.md`. Flags: `--section <name>`, `--check-only`, `--fix`. Includes a 20-row troubleshooting matrix covering every known failure mode (missing `claude` CLI, bad `settings.json`, hook path drift, MCP auth, false-positive prompt-guard, log bloat, Windows/WSL, perms, backup cleanup).
+- **`shine/templates/watermark.md`** — verified-source watermark template. Inline labels (`_[verified — …]_`, `_[unverified — pattern inferred]_`, `_[drafted — no source]_`) + mandatory Sources footer for every client-facing deliverable with factual claims.
+
+### Changed
+
+- **`CLAUDE.md §16`** (Factual / RAG Discipline) — adds the watermark convention as the enforceable output format for mixed deliverables.
+- **`shine/references/ui-brand.md`** — new §10b "Verified-source watermark" pointing to the template.
+- **`settings.template.json`** — registers `shine-learning-log.js` on the `Stop` event.
+- **`install.sh`** — log message bumped to reflect 141 skills, 8 lifecycle hooks (adds Stop), 6 templates (adds watermark).
+
+### Verified
+
+- `node shine/bin/shine-tools.cjs index-skills` → writes `skills/INDEX.md` with 140 entries.
+- `node shine/bin/shine-tools.cjs onboard` → creates 5 files on first run, skips on second run.
+- `node shine/bin/shine-tools.cjs doctor` → returns a valid JSON health report.
+- `SHINE_HOOK_FORMAT=json` regression: text mode unchanged, JSON mode emits parseable JSONL, exit codes preserved (prompt-guard still exits 2 on block).
+- `.github/scripts/check_agent_quality.py` → all agents still pass (no regressions).
+
+---
+
 ## [1.0.2] — 2026-04-15
+
+Second audit remediation release: closes every P1 item from the v2 audit.
 
 ### Added
 
@@ -49,6 +85,8 @@ Audit remediation release: closes every ship-blocking gap identified in the exte
 
 ### Changed
 
+- **`skills/shine-workstreams/SKILL.md`** — renamed `$GSD_TOOLS` → `$SHINE_TOOLS` and `GSD_WORKSTREAM` → `SHINE_WORKSTREAM` for brand consistency.
+- Historical references to the upstream framework in `CHANGELOG.md`, `README.md`, and `docs/ARCHITECTURE.md` rephrased from "GSD" to "upstream".
 - Skill count corrected to **138** across `README.md`, `CLAUDE.md`, `CHANGELOG.md`, and `install.sh` after deduplication.
 
 ### Fixed
@@ -68,14 +106,14 @@ Audit remediation release: closes every ship-blocking gap identified in the exte
 
 ## [1.0.0] — 2026-04-15
 
-First public release of the SHINE framework.
+First public release of the SHINE framework under the diShine digital agency.
 
 ### Added
 
 - **39 agents** under `agents/` — 21 core engineering (`shine-planner`, `shine-executor`, `shine-verifier`, `shine-debugger`, `shine-security-auditor`, `shine-codebase-mapper`, `shine-roadmapper`, `shine-ui-auditor`, `shine-ui-checker`, `shine-ui-researcher`, `shine-integration-checker`, `shine-nyquist-auditor`, `shine-plan-checker`, `shine-phase-researcher`, `shine-project-researcher`, `shine-research-synthesizer`, `shine-advisor-researcher`, `shine-assumptions-analyzer`, `shine-user-profiler`, `shine-doc-verifier`, `shine-doc-writer`) + 18 agency (`shine-client-researcher`, `shine-brand-voice-auditor`, `shine-competitor-scout`, `shine-proposal-writer`, `shine-sales-strategist`, `shine-content-editor`, `shine-seo-strategist`, `shine-martech-architect`, `shine-data-analyst`, `shine-copywriter`, `shine-gdpr-analyst`, `shine-translator`, `shine-pm-coordinator`, `shine-account-manager`, `shine-crm-operator`, `shine-retro-facilitator`, `shine-lead-scorer`, `shine-persona-researcher`).
 - **138 skills** under `skills/` across 8 categories:
-  - 61 core SHINE skills
-  - 17 agency skills (`proposal`, `draft-email`, `gdpr-audit`, `lead-enrich`, `client-brief`, `kickoff`, `retrospective`, `roi-estimate`, `seo-audit`, `tag-audit`, `cookie-scan`, `pii-safe`, `compliance-ai`, `meta-check`, `status-report`, `sync`, `client-tone`)
+  - 61 core SHINE skills (renamed & scrubbed from the upstream upstream framework)
+  - 17 early agency skills (`proposal`, `draft-email`, `gdpr-audit`, `lead-enrich`, `client-brief`, `kickoff`, `retrospective`, `roi-estimate`, `seo-audit`, `tag-audit`, `cookie-scan`, `pii-safe`, `compliance-ai`, `meta-check`, `status-report`, `sync`, `client-tone`)
   - 10 marketing/content (`content-calendar`, `blog-post`, `social-post`, `newsletter`, `landing-copy`, `value-prop`, `press-release`, `case-study`, `webinar-plan`, `campaign-brief`)
   - 10 sales/outreach (`cold-email`, `linkedin-dm`, `follow-up`, `sales-deck`, `icp-define`, `persona-build`, `competitor-analysis`, `pricing-page`, `sales-call-prep`, `sales-call-debrief`)
   - 10 consulting/strategy (`discovery-call`, `swot`, `okr-draft`, `roadmap-draft`, `stakeholder-map`, `risk-register`, `change-plan`, `digital-maturity`, `discovery-doc`, `exec-summary`)
@@ -99,6 +137,17 @@ First public release of the SHINE framework.
 - **Docs** — `ARCHITECTURE.md`, `HOW-IT-WORKS.md`, `CUSTOMIZATION.md`, `PLUGINS.md`, `AGENCY-WORKFLOWS.md`.
 - **Governance** — LICENSE (CC0 1.0), CONTRIBUTING, CODE_OF_CONDUCT, SECURITY.
 - **CI validator** — `.github/workflows/validate.yml` checks Bash syntax, Node syntax, JSON validity, agent/skill frontmatter, and dead hook references.
+
+### Changed
+
+- Rebranded from upstream claude-code-setup: all `upstream-*` identifiers renamed to `shine-*`, directory `get-shit-done/` renamed to `shine/`.
+- `settings.template.json` sanitized: `ANTHROPIC_BASE_URL` blank, `CLAUDE_CODE_ENABLE_TELEMETRY=0`, all OTEL endpoints blank.
+- Removed broken `uvx --from <YOUR_SCANNER_PACKAGE>` hook that silently failed on every Write/Edit in the upstream.
+
+### Removed
+
+- Ruflo MCP references — audited and confirmed zero runtime dependencies (only documentation mentions). Safe removal.
+- All references to the upstream author and their personal paths, gateways, and telemetry endpoints.
 
 ### Security
 
