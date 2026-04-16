@@ -27,7 +27,7 @@ Built by [diShine Digital Agency](https://dishine.it).
 
 ---
 
-## 💼 Business value at a glance
+## 💼 Business value map
 
 ![SHINE business value map](docs/business-value.svg)
 
