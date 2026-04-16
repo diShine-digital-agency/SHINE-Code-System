@@ -1,6 +1,6 @@
-# 🧠 SHINE Code System: agency-grade auto-pilot configuration for Claude Code
-
 <div align="center">
+
+# 🧠 SHINE Code System: agency-grade auto-pilot configuration for Claude Code
   
 [![diShine Logo](https://dishine.it/favicon.ico)](https://dishine.it/)
 
