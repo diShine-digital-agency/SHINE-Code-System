@@ -7,7 +7,7 @@ This is the 1-page guide. For the full picture, see [README.md](./README.md).
 ## 1. Install (2 min)
 
 ```bash
-git clone https://github.com/diShine-digital-agency/shine-claude-code-framework.git
+git clone https://github.com/diShine-digital-agency/SHINE-Code-System.git
 cd shine-claude-code-framework
 ./install.sh
 ```
