@@ -40,9 +40,7 @@ Release focused on discoverability, cross-session learning, skill composition, f
 
 ---
 
-## [0.2.0] — 2026-04-15
-
-Second audit remediation release: closes every P1 item from the v2 audit.
+## [0.2.0]
 
 ### Added
 
@@ -71,9 +69,7 @@ Second audit remediation release: closes every P1 item from the v2 audit.
 
 ---
 
-## [0.1.1] — 2026-04-15
-
-Audit remediation release: closes every ship-blocking gap identified in the external audit.
+## [0.1.1]
 
 ### Added
 
@@ -98,9 +94,9 @@ Audit remediation release: closes every ship-blocking gap identified in the exte
 
 ---
 
-## [0.1.0] — 2026-04-15
+## [0.1.0]
 
-First public release of the SHINE framework under the diShine digital agency.
+First release of the SHINE framework under the diShine digital agency.
 
 ### Added
 
