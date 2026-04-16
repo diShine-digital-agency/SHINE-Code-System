@@ -217,7 +217,45 @@ Always design hooks to **fail open**. A broken hook should never block Claude fr
 
 ---
 
-## 7. Opt-outs (env vars)
+## 7. Adding MCP servers (capability expansion)
+
+SHINE maps **60+ recommended MCP servers** across 20 capability categories. All follow Rule #21 (Tiered Fallback).
+
+### Quick install (top 5 priorities)
+
+```bash
+# 🔍 Deep web search (free, no API key)
+claude mcp add searxng --command "npx -y @ihor-sokoliuk/mcp-searxng"
+
+# 🗄️ Local analytics (free, no server needed)
+claude mcp add duckdb --command "npx -y @ktanaka101/mcp-server-duckdb"
+
+# 🧠 Semantic vector memory (free, local Docker)
+claude mcp add qdrant --command "npx -y @qdrant/mcp-server-qdrant"
+
+# 📦 Sandboxed code execution (free)
+claude mcp add docker --command "npx -y @quantgeekdev/docker-mcp"
+
+# 📊 Data visualization (free)
+claude mcp add echarts --command "npx -y @hustcc/mcp-echarts"
+```
+
+### Tiered fallback (Rule #21)
+
+When multiple tools serve the same function:
+
+```
+Tier 1 (free/local)  → use automatically, no questions
+Tier 2 (freemium)    → ASK before consuming credits
+Tier 3 (paid)        → REQUIRE explicit approval
+All unavailable      → manual fallback (paste/upload)
+```
+
+For the full integration guide — including how to create matching agents, skills, and decision rules — see [`docs/ADDING-INTEGRATIONS.md`](./ADDING-INTEGRATIONS.md). For the complete MCP map with tiers, see [`docs/PLUGINS.md`](./PLUGINS.md).
+
+---
+
+## 8. Opt-outs (env vars)
 
 All shipped hooks respect these:
 
@@ -266,11 +304,12 @@ The statusline picks it up on next render. The `◆ <client>` badge turns on.
 
 ## 9. Rewriting decision rules
 
-The 20 rules in `CLAUDE.md §Decision rules` are intentionally editable. Make them yours:
+The 21 rules in `CLAUDE.md §Decision rules` are intentionally editable. Make them yours:
 
 - Remove rules you don't use (e.g., if you don't do proposals, drop rule #19).
 - Add client-specific rules. Example: "When the user mentions `BANDO RER`, always load `client-rer.md` **and** `external-bandi-pa.md` before replying."
 - Tighten language. If Claude keeps hallucinating a certain kind of fact, add a rule that forbids it explicitly.
+- **Rule #21 (Tiered Fallback)** is special — it governs tool selection priority across all capabilities. Customize the tier map in `CLAUDE.md §15` if you want to promote a paid tool to be used without asking.
 
 The auto-sync block (`<!-- shine:plugins:begin -->`) at the bottom is managed by the framework — leave it alone.
 
@@ -286,3 +325,5 @@ git pull
 ```
 
 If something breaks: `./uninstall.sh` restores the previous `~/.claude/`. If you've hand-edited shipped files, they'll be overwritten — keep custom agents/skills under new names and your own `hooks/*-custom.*` to survive updates cleanly.
+
+> **MCP servers are safe across updates** — they live in `settings.json` under `mcpServers`, which `install.sh` merges rather than overwrites.

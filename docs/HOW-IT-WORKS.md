@@ -16,13 +16,13 @@ When you run `claude` in a project directory:
 3. **CLAUDE.md is loaded into the system prompt**, along with any `memory/preference-*.md` files (always-on) and the auto-synced plugins/MCP block.
 4. **Statusline renders** — `statusline.js` prints `✨ SHINE · <model> · <cwd> · ⎇ <branch> · ◆ <client> · <ctx>KB`.
 
-You now see the prompt. The model has the 20 decision rules, your preferences, and the list of available plugins/MCP in context — but not client memory or project memory yet. Those load lazily on demand.
+You now see the prompt. The model has the 21 decision rules, your preferences, and the list of available plugins/MCP in context — but not client memory or project memory yet. Those load lazily on demand.
 
 ---
 
-## 2. The 20 decision rules
+## 2. The 21 decision rules
 
-Every prompt is pattern-matched against the rules in `CLAUDE.md §Decision rules`. The rules are literal — you can read them. A few illustrative examples:
+Every prompt is pattern-matched against the rules in `CLAUDE.md §Decision rules`. The rules are literal — you can read them. Rule #21 is special: it governs **tool tier resolution** across all capabilities (see §3a below). A few illustrative examples:
 
 | # | Trigger | Action |
 |---|---|---|
@@ -38,6 +38,7 @@ Every prompt is pattern-matched against the rules in `CLAUDE.md §Decision rules
 | 18 | PII / personal data mentioned | Run `gdpr-analyst` check before storing |
 | 19 | "proposal / preventivo" | Load client memory, run `proposal` skill (MoSCoW, MD, 15% discount) |
 | 20 | Lead list mentioned | Run `lead-enrich` skill, Apollo/Hunter MCP |
+| **21** | **Any tool selection with free + paid alternatives** | **Tiered fallback: Tier 1 (free) → Tier 2 (freemium, ask) → Tier 3 (paid, explicit approval)** |
 
 When a rule fires, Claude does **exactly** what the rule says. If multiple rules match, the more specific one wins.
 
@@ -140,6 +141,26 @@ Retention is 20 by default (`SHINE_PRECOMPACT_KEEP`). After a compact you lose a
 
 ---
 
+## 7a. Tiered fallback in action
+
+### "Research competitor pricing for CONTOSO"
+
+1. Prompt matches **rule #16** (factual claim about company) and **rule #21** (tool tier resolution).
+2. Claude checks for Tier 1 (free) search tools:
+   - `searxng` installed? → **Yes** → use it. No questions asked.
+   - If not installed, check `fetch` MCP for direct URL access.
+3. If Tier 1 unavailable, Claude informs the user:
+   - _"SearXNG isn't connected. I can try Brave Search (free tier, needs API key). Proceed?"_
+4. If user approves Tier 2 → use `brave-search`. If not, try Tier 3:
+   - _"I can use Perplexity (paid API). This will consume credits. Proceed?"_
+5. If all tiers unavailable → manual fallback:
+   - _"No search tools available. Please paste the competitor's pricing page content."_
+6. Results are grounded in retrieved sources (rule #16), with watermark labels.
+
+This flow ensures **zero surprise costs** while never blocking the user.
+
+---
+
 ## 8. Failure modes & debugging
 
 | Symptom | Likely cause | Fix |
@@ -149,5 +170,7 @@ Retention is 20 by default (`SHINE_PRECOMPACT_KEEP`). After a compact you lose a
 | Writes blocked with "prompt-guard" | Real secret detected | Move the secret to env / keychain; if false positive, `SHINE_DISABLE_PROMPT_GUARD=1` for the session |
 | Hallucinated company facts | Rule #16 not firing | Add the specific fact pattern to CLAUDE.md or to the skill's `<guardrails>` |
 | Update notice keeps appearing after updating | Cache stale | `rm ~/.claude/cache/shine-update.json` |
+| Tool used paid API without asking | Rule #21 not firing | Ensure CLAUDE.md has the tiered fallback rule (see §21) |
+| MCP tools not appearing | Server not registered | Run `claude mcp add <name> --command "..."` or edit `settings.json` |
 
-For deeper customization — adding your own agents, skills, hooks, or rewriting decision rules — see [CUSTOMIZATION.md](./CUSTOMIZATION.md).
+For deeper customization — adding your own agents, skills, hooks, MCP servers, or rewriting decision rules — see [CUSTOMIZATION.md](./CUSTOMIZATION.md) and [ADDING-INTEGRATIONS.md](./ADDING-INTEGRATIONS.md).

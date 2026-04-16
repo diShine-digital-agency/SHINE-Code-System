@@ -47,49 +47,156 @@ All marketplace repos are declared under `extraKnownMarketplaces` in `settings.t
 
 SHINE doesn't install MCP servers — that's user-scoped in Claude Code. But several decision rules assume they exist. When a rule fires and the MCP is missing, the rule downgrades gracefully to "ask the user to connect it" (CLAUDE.md §16 — never fabricate).
 
+> **Rule #21 — Tiered Fallback:** When multiple tools can serve the same function, SHINE always tries free/local/OS tools first (Tier 1), then freemium tools after asking (Tier 2), then paid tools only with explicit approval (Tier 3). See `CLAUDE.md §21` and [`ADDING-INTEGRATIONS.md`](./ADDING-INTEGRATIONS.md).
+
 ### Communication & productivity
 
-| MCP | Rule | Connect via |
-|---|---|---|
-| **Gmail** (`you@youragency.com`) | #17 (draft-email), #18 (GDPR-in-threads) | Claude Code Gmail connector |
-| **Google Calendar** | #10 (scheduling) | GCal MCP |
-| **Asana** | #9 (project sync), #13 (status updates) | Asana MCP |
-| **Slack / Linear** | #9 | Official MCPs |
+| MCP | Rule | Tier | Connect via |
+|---|---|---|---|
+| **Gmail** (`you@youragency.com`) | #17 (draft-email), #18 (GDPR-in-threads) | — | Claude Code Gmail connector |
+| **Google Calendar** | #10 (scheduling) | — | GCal MCP |
+| **Asana** | #9 (project sync), #13 (status updates) | — | Asana MCP |
+| **Slack** | #9, comms | 1 (free) | `npx -y @korotovsky/slack-mcp-server` |
+| **ntfy** | notifications | 1 (free) | `npx -y @gitmotion/ntfy-me-mcp` |
 
 ### Sales & enrichment
 
-| MCP | Rule | Purpose |
-|---|---|---|
-| **Apollo.io** | #20 (lead-enrich) | People & company enrichment, campaigns |
-| **Hunter.io** / **Close** | #20 | Email patterns, CRM sync |
-| **Vibe Prospecting** | #20 | Fallback enrichment |
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Apollo.io** | #20 (lead-enrich) | 3 (paid) | People & company enrichment, campaigns |
+| **Hunter.io** / **Close** | #20 | 3 (paid) | Email patterns, CRM sync |
 
-### Research & data
+### Search & web intelligence
 
-| MCP | Rule | Purpose |
-|---|---|---|
-| **Perplexity** | #16 | Live web answers, citations |
-| **Exa** | #16 | Semantic web search |
-| **Firecrawl** / **Apify** | #16 | Scraping, structured extraction |
-| **Ahrefs** (MCP) | #8 (SEO) | Keyword research, backlinks |
-| **GSC** (via Ahrefs MCP) | #8 | Search Console data |
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **SearXNG** | #16, #21 | 1 (free) | Self-hosted meta-search — Google/Bing/DDG aggregated, no API key |
+| **Fetch** (official) | #16 | 1 (free) | HTTP URL → clean markdown |
+| **Puppeteer** (official) | #12 | 1 (free) | Headless Chrome for JS-heavy scraping |
+| **RAG Web Browser** | #16 | 1 (free) | Apify OS search + scrape + markdown pipeline |
+| **Brave Search** | #16 | 2 (freemium) | Brave Search API — requires key, free tier |
+| **Tavily** | #16 | 2 (freemium) | AI semantic search — free tier |
+| **Perplexity** | #16 | 3 (paid) | Live web answers, citations |
+| **Exa** | #16 | 3 (paid) | Semantic web search |
+| **Firecrawl** / **Apify** | #16 | 3 (paid) | Scraping, structured extraction |
 
-### Dev & infra
+### Databases & local analytics
 
-| MCP | Rule | Purpose |
-|---|---|---|
-| **Supabase** | #14 | DB, auth, edge functions |
-| **Sentry** | #3 (debugger), #13 | Error triage |
-| **GitHub** (`gh` CLI + MCP) | #2, #7 | PRs, issues, checks |
-| **Filesystem / Desktop Commander** | #2 | Local ops beyond Bash |
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **DuckDB** | #21, data analysis | 1 (free) | Analytical SQL on local CSV/Parquet/JSON |
+| **SQLite** (official) | #21 | 1 (free) | Embedded local database |
+| **PostgreSQL** (official) | #14 | 1 (free) | PostgreSQL schema + query |
+| **MySQL** | #14 | 1 (free) | MySQL with configurable access |
+| **MongoDB** | analytics | 1 (free) | MongoDB collections query & analysis |
+| **Redis** | caching, search | 1 (free) | Key-value store + search |
+| **Excel** | data, proposals | 1 (free) | Read/write .xlsx workbooks |
+| **Supabase** | #14 | — (plugin) | DB, auth, edge functions |
 
-### Docs & formats
+### Vector memory & semantic search
 
-| MCP | Rule | Purpose |
-|---|---|---|
-| **context7** | #11 | Framework docs (also shipped as a plugin) |
-| **markitdown** / **pdf2md** | #6 (doc-writer) | Convert PDFs to Markdown |
-| **Word / PowerPoint / PDF** | #19 (proposal) | Format proposal outputs |
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Qdrant** | memory, RAG | 1 (free) | Production vector search engine (local Docker) |
+
+### Sandbox & code execution
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Docker** | safe execution | 1 (free) | Container lifecycle, isolated code execution |
+| **Microsandbox** | safe execution | 1 (free) | Self-hosted AI code sandbox |
+| **E2B** | safe execution | 2 (freemium) | Cloud code sandbox |
+
+### Data visualization
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **ECharts** | reporting | 1 (free) | Interactive Apache ECharts chart generation |
+| **Mermaid** | diagrams | 1 (free) | Flowcharts, sequence, Gantt, ER diagrams |
+| **VegaLite** | stats | 1 (free) | Statistical visualizations |
+
+### Security & scanning
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Semgrep** | code review | 1 (free) | SAST security scanning |
+| **OSV** | dep audit | 1 (free) | Open Source Vulnerabilities database |
+| **sslmon** | infra | 1 (free) | SSL cert and domain monitoring |
+
+### Monitoring & observability
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Signoz** | #3, #13 | 1 (free) | OS APM — traces, metrics, logs |
+| **VictoriaMetrics** | monitoring | 1 (free) | Prometheus-compatible metrics |
+| **Kubernetes** | infra | 1 (free) | Multi-cluster K8s management |
+| **Sentry** | #3 (debugger), #13 | 2 (freemium) | Error triage |
+
+### Version control (extended)
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **GitHub** (official) | #2, #7 | 1 (free) | PRs, issues, code search |
+| **GitLab** (official) | #2, #7 | 1 (free) | GitLab project management |
+| **Git** (official) | #2 | 1 (free) | Local Git repository ops |
+
+### File systems & documents
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Filesystem** (official) | #2 | 1 (free) | Local FS with configurable paths |
+| **FileStash** | remote files | 1 (free) | SFTP, S3, FTP, WebDAV, SMB |
+| **eBook** | docs | 1 (free) | Read PDF + EPUB locally |
+| **markitdown** / **pdf2md** | #6 (doc-writer) | 1 (free) | Convert PDFs to Markdown |
+
+### Research & academic
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **ArXiv** | research | 1 (free) | ArXiv paper search |
+| **PapersWithCode** | research | 1 (free) | Papers + matching codebases |
+
+### Knowledge management
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Obsidian** | knowledge | 1 (free) | Obsidian vault search and management |
+| **Apple Notes** | knowledge | 1 (free) | macOS Apple Notes querying |
+
+### Social media & content
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **YouTube** | research, content | 1 (free) | Video transcript/subtitle analysis |
+| **BlueSky** | social | 1 (free) | BlueSky feed search |
+
+### Cloud & infrastructure
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Cloudflare** | deploy | 2 (freemium) | Workers, KV, R2, D1 |
+| **Globalping** | network | 1 (free) | ping, traceroute, DNS from global probes |
+
+### AI services
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **OpenAI Chat** | multi-model | 2 (freemium) | Chat with OpenAI-compatible models |
+| **HuggingFace Spaces** | AI | 1 (free) | Image, text, audio models |
+
+### Dev tools (extended)
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Figma** | UI work | 1 (free) | Design → code-ready data |
+| **OpenAPI Explorer** | API work | 1 (free) | OpenAPI/Swagger spec browsing |
+
+### SEO & MarTech
+
+| MCP | Rule | Tier | Purpose |
+|---|---|---|---|
+| **Ahrefs** (MCP) | #8 (SEO) | 3 (paid) | Keyword research, backlinks |
+| **GSC** (via Ahrefs MCP) | #8 | 3 (paid) | Search Console data |
 
 ---
 
@@ -150,6 +257,8 @@ Or edit `~/.claude/settings.json`:
 
 SessionStart will pick it up, `integration-sync.js` will add it to the CLAUDE.md block, and the rules will be aware of it — though you may want to add a routing rule that says "prefer my-mcp for X task."
 
+For the **full integration guide** — including how to create matching agents, skills, and decision rules — see [`docs/ADDING-INTEGRATIONS.md`](./ADDING-INTEGRATIONS.md).
+
 ---
 
 ## 6. Disabling a plugin without uninstalling
@@ -163,3 +272,21 @@ In `settings.json`:
 ```
 
 It stays on disk but won't load. Flip back to `true` any time.
+
+---
+
+## 7. Tiered fallback strategy
+
+When multiple tools serve the same function (e.g. web search), SHINE follows **Rule #21**:
+
+```
+Tier 1 (free/local/OS) → always try first, no questions asked
+  ↓ unavailable
+Tier 2 (freemium)      → ASK user before consuming credits
+  ↓ unavailable
+Tier 3 (paid)          → REQUIRE explicit approval, state costs
+  ↓ unavailable
+Manual fallback        → ask user to paste content / upload file
+```
+
+This ensures SHINE is cost-efficient by default while never blocking the user from accessing premium tools when they need them. See `CLAUDE.md §21` for the full rule.

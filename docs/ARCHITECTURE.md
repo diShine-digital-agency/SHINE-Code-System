@@ -1,4 +1,4 @@
-# SHINE — Architecture
+# SHINE — Architecture (v2 — Extended Capabilities)
 
 This doc explains **how the SHINE Claude Code Framework is organized on disk and at runtime.** If you want a higher-level walkthrough of what happens during a session, see [HOW-IT-WORKS.md](./HOW-IT-WORKS.md).
 
@@ -14,7 +14,7 @@ After `./install.sh`, `~/.claude/` looks like this:
 
 ```
 ~/.claude/
-├── CLAUDE.md                 # Global instructions — 20 decision rules, tone, RAG discipline
+├── CLAUDE.md                 # Global instructions — 21 decision rules, tone, RAG discipline, tiered fallback
 ├── settings.json             # User-editable config (model, hooks, plugins, MCP, env)
 ├── statusline.js             # Default statusline renderer (Node)
 ├── statusline.sh             # Pure-bash fallback (no Node, no jq required)
@@ -27,6 +27,7 @@ After `./install.sh`, `~/.claude/` looks like this:
 ├── tasks/ teams/ todos/      # Claude Code internal state
 ├── debug/ backups/ cache/    # Support dirs
 └── shine/VERSION             # Framework version marker (for update checks)
+```
 ```
 
 **Reversibility.** `install.sh` takes an atomic snapshot of any existing `~/.claude/` into `~/.claude-backup-<timestamp>/` before writing anything. `./uninstall.sh` restores the most recent snapshot; `./uninstall.sh --purge` wipes `~/.claude/` entirely with a typed confirmation.
@@ -42,22 +43,22 @@ After `./install.sh`, `~/.claude/` looks like this:
                 │
                 ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  CLAUDE.md — 20 decision rules                               │
-│  Pattern-match the prompt → route to agent / skill / tool    │
+│  CLAUDE.md — 21 decision rules + Rule #21 (Tiered Fallback)   │
+│  Pattern-match the prompt → route to agent / skill / tool     │
 └───────────────┬──────────────────────────────────────────────┘
                 │
    ┌────────────┼────────────┬─────────────┬──────────────┐
    ▼            ▼            ▼             ▼              ▼
  Skills       Agents      Plugins       MCP           Hooks
  (slash       (Task       (serena,      servers       (Session*,
- commands)    subagents)  context7…)    (Gmail,       Pre/Post
-                                         Apollo,       ToolUse,
-                                         Asana…)       PreCompact)
+ commands)    subagents)  context7…)    (60+ avail,   Pre/Post
+                                        tiered:       ToolUse,
+                                        free first)   PreCompact)
 ```
 
 ### 2.1 CLAUDE.md is the router
 
-The 20 decision rules in `CLAUDE.md` are literal pattern-to-action mappings. Example:
+The 21 decision rules in `CLAUDE.md` are literal pattern-to-action mappings. Rule #21 is special — it governs **tool tier resolution** whenever multiple tools can serve the same function (free first, then freemium after asking, then paid with explicit approval). Example:
 
 > **Rule 17** — When the prompt contains a client name from `memory/*client-*.md` and a communication verb (reply, draft, follow up), load the matching `type: client` memory file + `style-email-*.md`, then run the `draft-email` skill.
 
@@ -124,7 +125,11 @@ Plugins are installed via `claude plugins install` during `install.sh`. The set 
 - **LSP marketplace**: pyright, basedpyright
 - **Third-party**: ui-ux-pro-max, claude-mem, arize-skills
 
-MCP servers are user-configured — SHINE doesn't ship hard dependencies, but `CLAUDE.md` knows how to route to Gmail / Apollo / Asana / Ahrefs / Perplexity when the user has them connected (see [PLUGINS.md](./PLUGINS.md)).
+MCP servers are user-configured. SHINE maps **60+ recommended MCP servers** across **20 capability categories** (search, databases, vector memory, sandbox, charts, security, monitoring, git, file systems, research, knowledge, comms, social, cloud, AI, system automation, aggregators, geo, finance, dev tools). All follow **Rule #21 (Tiered Fallback)** — free/local first, freemium after asking, paid only with explicit approval.
+
+See:
+- [PLUGINS.md](./PLUGINS.md) — full MCP map with tiers
+- [ADDING-INTEGRATIONS.md](./ADDING-INTEGRATIONS.md) — step-by-step guide to add any MCP
 
 ### 2.6 Memory
 
@@ -160,3 +165,4 @@ Never store secrets in `memory/` — that directory is copied by backup, and may
 | Volatile | `sessions/*`, `projects/*`, `cache/*`, `debug/*` |
 
 See [CUSTOMIZATION.md](./CUSTOMIZATION.md) for how to extend the framework without breaking updates.
+See [ADDING-INTEGRATIONS.md](./ADDING-INTEGRATIONS.md) for how to add MCP servers, tools, and connectors.
