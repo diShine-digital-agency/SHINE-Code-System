@@ -8,7 +8,7 @@ This is the 1-page guide. For the full picture, see [README.md](./README.md).
 
 ```bash
 git clone https://github.com/diShine-digital-agency/SHINE-Code-System.git
-cd shine-claude-code-framework
+cd SHINE-Code-System
 ./install.sh
 ```
 
