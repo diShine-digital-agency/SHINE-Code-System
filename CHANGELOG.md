@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
-## [1.0.3] — 2026-04-16
+## [1.0.1] — 2026-04-16
 
 Release focused on discoverability, cross-session learning, skill composition, factual-discipline tooling, and an onboarding path for first-time users.
 
@@ -40,7 +40,7 @@ Release focused on discoverability, cross-session learning, skill composition, f
 
 ---
 
-## [1.0.2] — 2026-04-15
+## [0.2.0] — 2026-04-15
 
 Second audit remediation release: closes every P1 item from the v2 audit.
 
@@ -71,7 +71,7 @@ Second audit remediation release: closes every P1 item from the v2 audit.
 
 ---
 
-## [1.0.1] — 2026-04-15
+## [0.1.1] — 2026-04-15
 
 Audit remediation release: closes every ship-blocking gap identified in the external audit.
 
@@ -82,12 +82,6 @@ Audit remediation release: closes every ship-blocking gap identified in the exte
 - **`shine/templates/*.md`** — 5 scaffold templates (`project.md`, `requirements.md`, `context.md`, `milestone-archive.md`, `UAT.md`).
 - **`shine/references/*.md`** — 2 reference files (`ui-brand.md` covering voice, formatting, MoSCoW, commit messages; `questioning.md` covering 5-Why, MoSCoW prompts, discovery-call template, red flags).
 - **`install.sh`** — now copies `shine/bin/`, `shine/workflows/`, `shine/templates/`, `shine/references/`, validates 9 critical files post-install, and smoke-tests the runtime.
-
-### Changed
-
-- **`skills/shine-workstreams/SKILL.md`** — renamed `$GSD_TOOLS` → `$SHINE_TOOLS` and `GSD_WORKSTREAM` → `SHINE_WORKSTREAM` for brand consistency.
-- Historical references to the upstream framework in `CHANGELOG.md`, `README.md`, and `docs/ARCHITECTURE.md` rephrased from "GSD" to "upstream".
-- Skill count corrected to **138** across `README.md`, `CLAUDE.md`, `CHANGELOG.md`, and `install.sh` after deduplication.
 
 ### Fixed
 
@@ -104,7 +98,7 @@ Audit remediation release: closes every ship-blocking gap identified in the exte
 
 ---
 
-## [1.0.0] — 2026-04-15
+## [0.1.0] — 2026-04-15
 
 First public release of the SHINE framework under the diShine digital agency.
 
@@ -137,17 +131,6 @@ First public release of the SHINE framework under the diShine digital agency.
 - **Docs** — `ARCHITECTURE.md`, `HOW-IT-WORKS.md`, `CUSTOMIZATION.md`, `PLUGINS.md`, `AGENCY-WORKFLOWS.md`.
 - **Governance** — LICENSE (CC0 1.0), CONTRIBUTING, CODE_OF_CONDUCT, SECURITY.
 - **CI validator** — `.github/workflows/validate.yml` checks Bash syntax, Node syntax, JSON validity, agent/skill frontmatter, and dead hook references.
-
-### Changed
-
-- Rebranded from upstream claude-code-setup: all `upstream-*` identifiers renamed to `shine-*`, directory `get-shit-done/` renamed to `shine/`.
-- `settings.template.json` sanitized: `ANTHROPIC_BASE_URL` blank, `CLAUDE_CODE_ENABLE_TELEMETRY=0`, all OTEL endpoints blank.
-- Removed broken `uvx --from <YOUR_SCANNER_PACKAGE>` hook that silently failed on every Write/Edit in the upstream.
-
-### Removed
-
-- Ruflo MCP references — audited and confirmed zero runtime dependencies (only documentation mentions). Safe removal.
-- All references to the upstream author and their personal paths, gateways, and telemetry endpoints.
 
 ### Security
 
