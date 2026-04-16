@@ -12,7 +12,7 @@ _SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
 [![License: CC0](https://img.shields.io/badge/License-CC0%201.0-lightgrey)](LICENSE)
 
 <p align="center">
-  <img src="docs/SHINE Workflow and Architecture Overview.webp" alt="SHINE Code System overview board" width="100%">
+  <img src="docs/SHINE Workflow and Architecture Overview.webp" alt="SHINE Code System overview" width="100%">
 </p>
 
 ***SHINE Code System turns Claude Code into an orchestrator. Instead of telling Claude which tool to use every time, a single global `CLAUDE.md` with **29 decision rules** pattern-matches every prompt to the right tool chain — automatically. Add a persistent `MEMORY.md` layer that survives across conversations, a **60+ MCP capability map** with free-first tiered fallback, and you have an auto-pilot calibrated for consulting, MarTech, and digital-agency work.***
@@ -648,6 +648,10 @@ For vulnerabilities, follow our [`SECURITY.md`](./SECURITY.md), do not open publ
 | **Languages** | English · French · Italian · Spanish |
 
 ---
+
+<p align="center">
+  <img src="docs/Shine AI Orchestration Framework.webp" alt="SHINE framework" width="100%">
+</p>
 
 _Made with ❤️ by the diShine team in Milan, Italy_  
 _🇫🇷 Dreamed in French · 🇮🇹 Built in Italy · 🇬🇧 Shipped in English_
