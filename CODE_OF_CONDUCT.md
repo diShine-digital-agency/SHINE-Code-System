@@ -25,7 +25,7 @@ This Code applies in all project spaces — repo, issues, PRs, discussions — a
 
 ## Enforcement
 
-Report issues privately to **conduct@dishine.it**. Maintainers will review within 5 business days and take appropriate action, which may include warnings, temporary bans, or permanent removal from project spaces.
+Report issues privately to **kevin@dishine.it**. Maintainers will review within 5 business days and take appropriate action, which may include warnings, temporary bans, or permanent removal from project spaces.
 
 ## Attribution
 
