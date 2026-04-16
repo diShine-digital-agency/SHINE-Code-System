@@ -149,6 +149,18 @@ Use `→` for in-progress, `✓` for success, `✗` for failure, `…` for pendi
 
 ---
 
+## 10b. Verified-source watermark (client-facing deliverables)
+
+Mixed deliverables (facts + drafted language) must distinguish the two:
+
+- Inline labels: `_[verified — <source>, <date>]_`, `_[unverified — pattern inferred]_`, `_[drafted — no source]_`.
+- Sources footer at the bottom with a small table of URL + fetch date per verified claim.
+- Zero-fact deliverable → add one-line disclaimer: _"No facts retrieved this session — drafted language only."_
+
+Full template: `shine/templates/watermark.md`. Rule source: `CLAUDE.md §16`.
+
+---
+
 ## 11. Do-nots
 
 - No ALL-CAPS screaming.
