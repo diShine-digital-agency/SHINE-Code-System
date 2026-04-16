@@ -12,7 +12,7 @@ _SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
 [![License: CC0](https://img.shields.io/badge/License-CC0%201.0-lightgrey)](LICENSE)
 
 <p align="center">
-  <img src="docs/shine_code_system_v2_01_system_overview_board.webp" alt="SHINE Code System overview board" width="90%">
+  <img src="docs/SHINE Workflow and Architecture Overview.webp" alt="SHINE Code System overview board" width="100%">
 </p>
 
 ***SHINE Code System turns Claude Code into an orchestrator. Instead of telling Claude which tool to use every time, a single global `CLAUDE.md` with **29 decision rules** pattern-matches every prompt to the right tool chain — automatically. Add a persistent `MEMORY.md` layer that survives across conversations, a **60+ MCP capability map** with free-first tiered fallback, and you have an auto-pilot calibrated for consulting, MarTech, and digital-agency work.***
@@ -472,6 +472,9 @@ SHINE ships with **5 agency-specific decision rules** that ordinary dev-centric 
 5. **Lead enrichment** — `@lead-enrichment` pattern: local scripts first → Apollo → Apify, with structured CSV/Markdown output and pattern-inferred emails labelled as _"inferred — not verified"_.
 
 ---
+<p align="center">
+  <img src="docs/shine_code_system_v2_01_system_overview_board.webp" alt="SHINE Code System overview board" width="90%">
+</p>
 
 ## 🪝 Hooks
 
