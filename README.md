@@ -27,7 +27,7 @@ Built by [diShine Digital Agency](https://dishine.it).
 
 ---
 
-## 💼 Business Value at a Glance
+## 💼 Business value at a glance
 
 ![SHINE business value map](docs/business-value.svg)
 
@@ -35,7 +35,7 @@ Built by [diShine Digital Agency](https://dishine.it).
 
 ---
 
-## 📑 Table of Contents
+## 📑 Table of contents
 
 - [Why SHINE](#why-shine)
 - [Business Value at a Glance](#business-value-at-a-glance)
@@ -83,11 +83,11 @@ settings.json  →  Global Memory  →  CLAUDE.md  →  Hooks
 
 ---
 
-## 📊 At a Glance
+## 📊 At a glance
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║           ✨  SHINE Claude Code Framework  v2.0.0  ✨           ║
+║           ✨  SHINE Claude Code Framework  v1.0.0  ✨           ║
 ╠══════════════════════════════════════════════════════════════════╣
 ║  45 agents  ·  146 skills  ·  7 hooks  ·  29 decision rules     ║
 ║  16 plugins ·  60+ MCP map ·  6 docs   ·  20 capability tiers   ║
@@ -137,7 +137,7 @@ compliance & ops   ██                                                       
 
 ---
 
-## 🔧 How It Works
+## 🔧 How it works
 
 ![SHINE architecture diagram](docs/architecture.svg)
 
@@ -163,7 +163,7 @@ No manual tool selection. The rules handle orchestration.
 
 ---
 
-## 🚦 How to Use — Journey Map
+## 🚦 How to use: journey map
 
 ![SHINE how-to-use journey map](docs/how-to-use.svg)
 
@@ -171,7 +171,7 @@ No manual tool selection. The rules handle orchestration.
 
 ---
 
-## 📦 What's Included
+## 📦 What's included
 
 | Component | Count | Description |
 |-----------|-------|-------------|
@@ -186,7 +186,7 @@ No manual tool selection. The rules handle orchestration.
 
 ---
 
-## ⚡ Quick Install
+## ⚡ Quick install
 
 ```bash
 git clone https://github.com/diShine-digital-agency/shine-claude-code-framework.git
@@ -285,7 +285,7 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full agent × skill m
 
 ---
 
-## 🧩 Skill Catalogue (138)
+## 🧩 Skill catalogue (138)
 
 Every skill is a slash command: `/skill-name [args]`. Grouped by category.
 
@@ -364,7 +364,7 @@ Naming pattern: `/shine-*` — the engineering spine of the framework (plan, res
 
 ---
 
-## 🤖 Agent Roster (39)
+## 🤖 Agent roster (39)
 
 Agents are delegated via the Task tool. Each one returns a 5-section report: **Summary / Details / Sources / Open questions / Next step.**
 
@@ -456,7 +456,7 @@ When the task matches the trigger, SHINE proactively suggests diShine's own open
 
 ---
 
-## 🏢 Agency Workflows
+## 🏢 Agency workflows
 
 SHINE ships with **5 agency-specific decision rules** that ordinary dev-centric setups don't cover. See [`docs/AGENCY-WORKFLOWS.md`](docs/AGENCY-WORKFLOWS.md) for full detail.
 
@@ -489,7 +489,7 @@ All hooks support an opt-out env var (`SHINE_DISABLE_<NAME>=1`). See [`docs/CUST
 
 ---
 
-## 🧠 Global Memory
+## 🧠 Global memory
 
 Memory is **global** (shared across projects), not project-scoped. The `global-memory-symlink.sh` hook symlinks each project's `memory/` directory to `~/.claude/memory/` on session start.
 
@@ -604,11 +604,11 @@ Rules 16–20 are the agency-specific additions. Rule 21 governs cost-efficient 
 
 SHINE is diShine's take on how a creative tech agency should run Claude Code in production:
 
-- **Transparency** — every rule, hook, and agent is readable plaintext
-- **Pragmatism** — every tool solves a real problem we or our clients actually faced
-- **Accessibility** — works on macOS and Linux out of the box; Windows via WSL
-- **Accountability** — atomic backups, `--dry-run` everywhere, reversible install
-- **Factuality** — built-in RAG discipline; hallucination is not acceptable on client work
+- **Transparency**: every rule, hook, and agent is readable plaintext
+- **Pragmatism**: every tool solves a real problem we or our clients actually faced
+- **Accessibility**: works on macOS and Linux out of the box; Windows via WSL
+- **Accountability**: atomic backups, `--dry-run` everywhere, reversible install
+- **Factuality**: built-in RAG discipline; hallucination is not acceptable on client work
 
 ---
 
@@ -616,7 +616,7 @@ SHINE is diShine's take on how a creative tech agency should run Claude Code in 
 
 We welcome issues and pull requests. Read [`CONTRIBUTING.md`](./CONTRIBUTING.md) and our [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) first.
 
-For vulnerabilities, follow our [`SECURITY.md`](./SECURITY.md) — do not open public issues.
+For vulnerabilities, follow our [`SECURITY.md`](./SECURITY.md), do not open public issues.
 
 ---
 
