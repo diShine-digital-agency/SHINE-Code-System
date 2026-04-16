@@ -311,6 +311,8 @@ Agency work is client-facing. **Hallucination is unacceptable.**
 
 **Preferred paradigm: RAG.** Ground every factual claim in a retrieved, readable source. If it wasn't fetched this session, it's not verified.
 
+**Verified-source watermark (client-facing deliverables).** When a deliverable mixes sourced facts with drafted language, append a short _Sources_ footer listing each verified source with its fetch date. For unverified passages, inline-label them `_[unverified — pattern inferred]_` or `_[drafted — no source]_`. Template: `shine/templates/watermark.md`.
+
 ---
 
 ## 17. Client Communication Tone-Switching (AGENCY)

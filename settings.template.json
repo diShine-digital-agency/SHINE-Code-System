@@ -101,6 +101,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/hooks/shine-learning-log.js\"",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   },
 
