@@ -194,8 +194,8 @@ No manual tool selection. The rules handle orchestration.
 ## ⚡ Quick install
 
 ```bash
-git clone https://github.com/diShine-digital-agency/shine-claude-code-framework.git
-cd shine-claude-code-framework
+git clone https://github.com/diShine-digital-agency/SHINE-Code-System.git
+cd SHINE-Code-System
 
 # Preview what will happen (no changes made):
 ./install.sh --dry-run
