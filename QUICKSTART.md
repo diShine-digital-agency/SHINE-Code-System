@@ -109,7 +109,7 @@ Location: `~/.claude/memory/` (or symlinked from `./memory/` in a project).
 ## 7. Where to go next
 
 - **Full architecture**: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
-- **All 138 skills**: [docs/HOW-IT-WORKS.md](./docs/HOW-IT-WORKS.md)
+- **All 149 skills**: [skills/INDEX.md](./skills/INDEX.md) (regenerate via `node shine/bin/shine-tools.cjs index-skills`)
 - **Customization**: [docs/CUSTOMIZATION.md](./docs/CUSTOMIZATION.md)
 - **Agency workflows**: [docs/AGENCY-WORKFLOWS.md](./docs/AGENCY-WORKFLOWS.md)
 
