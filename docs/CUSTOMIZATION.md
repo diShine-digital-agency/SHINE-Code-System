@@ -259,6 +259,8 @@ For the full integration guide — including how to create matching agents, skil
 
 All shipped hooks respect these:
 
+### Disable / enable
+
 | Var | Effect |
 |---|---|
 | `SHINE_DISABLE_UPDATE_CHECK=1` | Skip the GitHub release check |
@@ -266,9 +268,25 @@ All shipped hooks respect these:
 | `SHINE_DISABLE_PROMPT_GUARD=1` | Allow writes with secret-shaped content (dangerous) |
 | `SHINE_DISABLE_READ_GUARD=1` | Suppress "editing generated file" warnings |
 | `SHINE_DISABLE_PRECOMPACT=1` | Skip the precompact snapshot |
-| `SHINE_CONTEXT_SOFT_KB`, `SHINE_CONTEXT_HARD_KB` | Transcript thresholds in KB |
-| `SHINE_PRECOMPACT_KEEP` | Retention count for precompact snapshots |
-| `SHINE_UPDATE_REPO` | Override the GitHub repo for update checks |
+| `SHINE_DISABLE_LEARNING_LOG=1` | Stop appending per-turn JSONL metadata to `learning-log.jsonl` |
+| `SHINE_DISABLE_SESSION_SUMMARY=1` | Stop appending per-session markdown blocks to `learning-log.md` |
+| `SHINE_DISABLE_CLIENT_DETECT=1` | Stop pre-loading client memory via `UserPromptSubmit` |
+| `SHINE_DISABLE_TONE_CALIBRATOR=1` | Stop tracking tone-correction signals |
+
+### Tunables
+
+| Var | Default | Effect |
+|---|---|---|
+| `SHINE_CONTEXT_SOFT_KB`, `SHINE_CONTEXT_HARD_KB` | 800 / 1600 | Transcript size thresholds in KB |
+| `SHINE_PRECOMPACT_KEEP` | 20 | Retention count for precompact snapshots |
+| `SHINE_LEARNING_LOG_MAX` | 10000 | LRU cap for per-turn JSONL entries |
+| `SHINE_SESSION_SUMMARY_MAX` | 1000 | LRU cap for per-session markdown blocks |
+| `SHINE_CLIENT_DETECT_MAX` | 3 | Max client memories pre-loaded per prompt |
+| `SHINE_CLIENT_DETECT_MIN_LEN` | 4 | Minimum slug length to match (filters short common words) |
+| `SHINE_TONE_GLOBAL` | 1 | When set to `0`, tone deltas only write to `style-<active-client>.md` (never `style-global.md`) |
+| `SHINE_TONE_MAX_ENTRIES` | 200 | LRU cap per style file |
+| `SHINE_HOOK_FORMAT` | `text` | Set to `json` for one-line JSONL output per notification (log pipelines) |
+| `SHINE_UPDATE_REPO` | `diShine-digital-agency/shine-claude-code-framework` | Override the GitHub repo for update checks |
 
 ---
 
@@ -304,7 +322,7 @@ The statusline picks it up on next render. The `◆ <client>` badge turns on.
 
 ## 9. Rewriting decision rules
 
-The 21 rules in `CLAUDE.md §Decision rules` are intentionally editable. Make them yours:
+The 29 rules in `CLAUDE.md §Decision rules` are intentionally editable. Make them yours:
 
 - Remove rules you don't use (e.g., if you don't do proposals, drop rule #19).
 - Add client-specific rules. Example: "When the user mentions `BANDO RER`, always load `client-rer.md` **and** `external-bandi-pa.md` before replying."

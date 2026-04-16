@@ -1,6 +1,6 @@
 # SHINE — Plugins & MCP Map
 
-SHINE doesn't hard-depend on any plugin or MCP server. But the 20 decision rules in `CLAUDE.md` route to specific integrations when you have them connected. This doc tells you **which integration the framework expects for each kind of task**, how to install it, and what happens when it's missing.
+SHINE doesn't hard-depend on any plugin or MCP server. But the 29 decision rules in `CLAUDE.md` route to specific integrations when you have them connected. This doc tells you **which integration the framework expects for each kind of task**, how to install it, and what happens when it's missing.
 
 ---
 

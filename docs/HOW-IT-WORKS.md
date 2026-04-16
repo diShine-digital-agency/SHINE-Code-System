@@ -16,13 +16,22 @@ When you run `claude` in a project directory:
 3. **CLAUDE.md is loaded into the system prompt**, along with any `memory/preference-*.md` files (always-on) and the auto-synced plugins/MCP block.
 4. **Statusline renders** — `statusline.js` prints `✨ SHINE · <model> · <cwd> · ⎇ <branch> · ◆ <client> · <ctx>KB`.
 
-You now see the prompt. The model has the 21 decision rules, your preferences, and the list of available plugins/MCP in context — but not client memory or project memory yet. Those load lazily on demand.
+You now see the prompt. The model has the 29 decision rules, your preferences, and the list of available plugins/MCP in context — but not client memory or project memory yet. Those load **just before reasoning** via the `UserPromptSubmit` hooks (§1a below) or lazily on demand later.
+
+### 1a. UserPromptSubmit pre-load (cuts §17 / §19 / §20 latency)
+
+When you press Enter, **before** the model sees your prompt, two `UserPromptSubmit` hooks run in parallel:
+
+- **`shine-client-detect.js`** — scans the prompt for client slugs derived from `memory/client-<slug>.md` filenames. On a hit, it emits a JSON `additionalContext` directive (`@~/.claude/memory/client-<slug>.md`) so Claude Code injects the client memory into the very next turn. No "which client?" round-trip; rules §17 / §19 / §20 fire with full context already loaded. Opt-out: `SHINE_DISABLE_CLIENT_DETECT=1`.
+- **`shine-tone-calibrator.js`** — regex-only detection of tone-correction signals across 5 axes (formality / length / warmth / assertiveness / jargon, EN + IT). Writes a timestamped delta to `memory/style-<active-client>.md` (or `style-global.md`). The next time you draft anything with that client, the style file is loaded and Claude calibrates to your accumulated corrections. Opt-out: `SHINE_DISABLE_TONE_CALIBRATOR=1`.
+
+Both hooks are PII-free: client-detect only matches against known slug filenames; tone-calibrator only inspects regex signals, never prompt content.
 
 ---
 
-## 2. The 21 decision rules
+## 2. The 29 decision rules
 
-Every prompt is pattern-matched against the rules in `CLAUDE.md §Decision rules`. The rules are literal — you can read them. Rule #21 is special: it governs **tool tier resolution** across all capabilities (see §3a below). A few illustrative examples:
+Every prompt is pattern-matched against the rules in `CLAUDE.md §Decision rules`. The rules are literal — you can read them. Rule #21 is special: it governs **tool tier resolution** across all capabilities (see §3a below). Rules §22–§29 map specific MCP-capability clusters. A few illustrative examples:
 
 | # | Trigger | Action |
 |---|---|---|
@@ -33,12 +42,18 @@ Every prompt is pattern-matched against the rules in `CLAUDE.md §Decision rules
 | 7 | "review PR / code review" | Run `shine-review` skill |
 | 11 | Library / framework question | Route to `context7` plugin for live docs |
 | 15 | Long-running sub-investigation | Spawn sub-agent via Task tool, don't inline |
-| 16 | Any factual claim (company, person, number, URL) | Ground in a live retrieval, never fabricate |
+| 16 | Any factual claim (company, person, number, URL) | Ground in a live retrieval, never fabricate; apply verified-source watermark |
 | 17 | Client name + communication verb | Load `client-<slug>.md` + `style-email-*.md`, run `draft-email` skill |
 | 18 | PII / personal data mentioned | Run `gdpr-analyst` check before storing |
 | 19 | "proposal / preventivo" | Load client memory, run `proposal` skill (MoSCoW, MD, 15% discount) |
 | 20 | Lead list mentioned | Run `lead-enrich` skill, Apollo/Hunter MCP |
 | **21** | **Any tool selection with free + paid alternatives** | **Tiered fallback: Tier 1 (free) → Tier 2 (freemium, ask) → Tier 3 (paid, explicit approval)** |
+| 22 | "research / investigate / find sources" on the open web | Delegate to `shine-web-researcher` (searxng → fetch → brave-search) |
+| 23 | "analyze CSV / SQL / spreadsheet / KPI" | Delegate to `shine-data-engineer` (duckdb / sqlite / excel / echarts) |
+| 24 | "chart / diagram / dashboard" | Delegate to `shine-chart-builder` (echarts / mermaid / vegalite) |
+| 25 | "scan / vulnerability / dependency audit" | Delegate to `shine-vulnerability-scanner` (semgrep / osv / sslmon) |
+| 26 | "run this code / sandbox / try this snippet" | Delegate to `shine-sandbox-runner` (docker / microsandbox / e2b) |
+| 28 | "deploy / cluster / monitoring / probe" | Delegate to `shine-infra-ops` (docker / kubernetes / signoz / globalping) |
 
 When a rule fires, Claude does **exactly** what the rule says. If multiple rules match, the more specific one wins.
 
@@ -97,7 +112,21 @@ When Claude invokes a tool (Bash, Edit, Write, Agent, Task, …):
 3. **PostToolUse hooks fire**:
    - `shine-context-monitor.js` on `Bash|Edit|Write|MultiEdit|Agent|Task` — checks transcript size; at 800 KB prints a "soft limit" notice, at 1.6 MB a "hard limit" notice. Thresholds tunable via `SHINE_CONTEXT_SOFT_KB` / `SHINE_CONTEXT_HARD_KB`.
 
-No hook can rewrite tool input. They can **block** (exit 2) or **warn** (stderr + exit 0). This is deliberate — we want hooks to be easy to reason about.
+No hook can rewrite tool input. They can **block** (exit 2) or **warn** (stderr + exit 0). This is deliberate — we want hooks to be easy to reason about. The two `UserPromptSubmit` hooks (`shine-client-detect`, `shine-tone-calibrator`) are the one exception: they emit JSON to stdout to inject `additionalContext` into the next turn (a Claude Code feature, not a side-effect).
+
+---
+
+## 5a. End-of-turn & end-of-session (Stop / SessionEnd)
+
+Once Claude finishes a turn:
+
+- **`shine-learning-log.js`** (Stop) — appends a single JSONL line to `~/.claude/memory/learning-log.jsonl`: `{ts, cwd, last_tool, transcript_bytes, event}`. **Metadata only**, no conversation content. LRU cap `SHINE_LEARNING_LOG_MAX=10000`.
+
+When the whole session ends (you exit `claude`, the process is killed, or Claude Code transitions to a new project):
+
+- **`shine-session-summary.js`** (SessionEnd) — reads the JSONL tail to compute the session window (last 6h same cwd), turn count, and top tools. Appends a markdown block to `~/.claude/memory/learning-log.md` with placeholders `Task:` / `Outcome:` / `Preference observed:` for `/shine-retro` to fill on the next weekly review. Cap `SHINE_SESSION_SUMMARY_MAX=1000`.
+
+Together, these two files feed the cross-session learning loop. Run `/shine-retro` weekly to consolidate observations into typed memory updates (the skill never edits memory directly — it proposes diffs).
 
 ---
 
