@@ -277,19 +277,147 @@ USE WHEN: creating or editing Claude Code skills.
 
 ---
 
-## 15. BYO — Bring-Your-Own Advanced Orchestration
+## 15. BYO — Extended Capability Map (MCP Servers)
 
-SHINE does **not** bundle agent-pool / neural / coordination MCP servers. If you need that class of tooling, install the MCP server yourself and extend this section locally.
+SHINE ships with plugins but does **not** bundle MCP servers — those are user-configured. Below is the full map of capabilities you can add. See [`docs/ADDING-INTEGRATIONS.md`](docs/ADDING-INTEGRATIONS.md) for install commands.
 
-Typical BYO capabilities to wire here:
-- Agent orchestration (pool, spawn, coordinate)
-- Persistent vector memory / embeddings
-- Workflow automation engines
-- Neural pattern detection / prediction
-- Alternative browser drivers
-- Code/risk analysis engines
+**All tools follow Rule #21 (Tiered Fallback): free/local first, freemium second (ask before using credits), paid third (explicit approval).**
 
-> Leave this block as documentation if you have no BYO MCP. Don't invent tools you can't call.
+### 🔍 Search & Web Scraping
+| MCP | Tier | Purpose |
+|---|---|---|
+| `searxng` | 1 (free) | Self-hosted meta-search (Google, Bing, DDG aggregated) |
+| `fetch` | 1 (free) | HTTP URL → clean markdown |
+| `puppeteer` | 1 (free) | Headless Chrome for JS-heavy sites |
+| `rag-web-browser` | 1 (free) | Search + scrape + markdown pipeline |
+| `brave-search` | 2 (freemium) | Brave Search API |
+| `tavily` | 2 (freemium) | AI semantic search |
+
+### 🗄️ Databases & Analytics
+| MCP | Tier | Purpose |
+|---|---|---|
+| `duckdb` | 1 (free) | Analytical SQL on local CSV/Parquet/JSON |
+| `sqlite` | 1 (free) | Embedded local database |
+| `postgres` | 1 (free) | PostgreSQL schema + query |
+| `mysql` | 1 (free) | MySQL with configurable access |
+| `mongodb` | 1 (free) | MongoDB collections |
+| `redis` | 1 (free) | Key-value store + search |
+| `excel` | 1 (free) | Read/write .xlsx workbooks |
+
+### 🧠 Vector Memory & Semantic Search
+| MCP | Tier | Purpose |
+|---|---|---|
+| `qdrant` | 1 (free) | Production vector search engine |
+
+### 📦 Sandbox & Code Execution
+| MCP | Tier | Purpose |
+|---|---|---|
+| `docker` | 1 (free) | Container lifecycle, isolated execution |
+| `microsandbox` | 1 (free) | Self-hosted code sandbox |
+| `e2b` | 2 (freemium) | Cloud sandbox |
+
+### 📊 Data Visualization
+| MCP | Tier | Purpose |
+|---|---|---|
+| `echarts` | 1 (free) | Interactive Apache ECharts generation |
+| `mermaid` | 1 (free) | Flowcharts, sequence, Gantt diagrams |
+| `vegalite` | 1 (free) | Statistical visualizations |
+
+### 🔒 Security & Vulnerability Scanning
+| MCP | Tier | Purpose |
+|---|---|---|
+| `semgrep` | 1 (free) | SAST code security scanning |
+| `osv` | 1 (free) | Open Source Vulnerability database |
+| `sslmon` | 1 (free) | SSL cert and domain monitoring |
+
+### 📈 Monitoring & Observability
+| MCP | Tier | Purpose |
+|---|---|---|
+| `signoz` | 1 (free) | Open-source APM (Datadog alternative) |
+| `victoriametrics` | 1 (free) | Prometheus-compatible metrics |
+| `kubernetes` | 1 (free) | Multi-cluster K8s management |
+
+### 🔄 Version Control (extended)
+| MCP | Tier | Purpose |
+|---|---|---|
+| `github` | 1 (free) | GitHub PRs, issues, code search |
+| `gitlab` | 1 (free) | GitLab project management |
+| `git` | 1 (free) | Local Git repository ops |
+
+### 📂 File Systems & Documents
+| MCP | Tier | Purpose |
+|---|---|---|
+| `filesystem` | 1 (free) | Local FS with configurable paths |
+| `filestash` | 1 (free) | SFTP, S3, FTP, WebDAV, SMB |
+| `ebook` | 1 (free) | Read PDF + EPUB locally |
+
+### 🧬 Research & Academic
+| MCP | Tier | Purpose |
+|---|---|---|
+| `arxiv` | 1 (free) | ArXiv paper search |
+| `paperswithcode` | 1 (free) | Papers + matching codebases |
+
+### 📝 Knowledge Management
+| MCP | Tier | Purpose |
+|---|---|---|
+| `obsidian` | 1 (free) | Obsidian vault integration |
+| `apple-notes` | 1 (free) | macOS Apple Notes |
+
+### 💬 Communication
+| MCP | Tier | Purpose |
+|---|---|---|
+| `slack` | 1 (free) | Slack channels read/write |
+| `ntfy` | 1 (free) | Push notifications |
+
+### 📱 Social Media
+| MCP | Tier | Purpose |
+|---|---|---|
+| `youtube` | 1 (free) | Video transcripts/subtitles |
+| `bluesky` | 1 (free) | BlueSky feed search |
+
+### ⚡ Cloud & Infrastructure
+| MCP | Tier | Purpose |
+|---|---|---|
+| `cloudflare` | 2 (freemium) | Workers, KV, R2, D1 |
+| `globalping` | 1 (free) | Network probes worldwide |
+| `kubernetes` | 1 (free) | Multi-cluster management |
+
+### 🤖 AI Services
+| MCP | Tier | Purpose |
+|---|---|---|
+| `openai-chat` | 2 (freemium) | Multi-model chat (Groq, Perplexity, xAI) |
+| `hfspace` | 1 (free) | HuggingFace Spaces |
+
+### ⚙️ System Automation
+| MCP | Tier | Purpose |
+|---|---|---|
+| `apple-shortcuts` | 1 (free) | Trigger macOS Shortcuts |
+
+### 🔗 Aggregators & MCP Management
+| MCP | Tier | Purpose |
+|---|---|---|
+| `toolhive` | 1 (free) | Containerized MCP deployment |
+| `mcp-get` | 1 (free) | CLI for MCP server management |
+
+### 🗺️ Location & Geo
+| MCP | Tier | Purpose |
+|---|---|---|
+| `google-maps` | 2 (freemium) | Routing, places, geocoding |
+| `iplocate` | 1 (free) | IP geolocation |
+
+### 💹 Finance
+| MCP | Tier | Purpose |
+|---|---|---|
+| `dexpaprika` | 1 (free) | Crypto DEX data |
+| `coinmarket` | 2 (freemium) | CoinMarketCap API |
+
+### 💻 Dev Tools (extended)
+| MCP | Tier | Purpose |
+|---|---|---|
+| `figma` | 1 (free) | Design → code-ready data |
+| `openapi-explorer` | 1 (free) | OpenAPI/Swagger spec browser |
+
+> Missing MCP → SHINE states the gap and offers a degraded path. Never fabricates.
 
 ---
 
@@ -371,16 +499,53 @@ USE WHEN: the user asks for contact discovery, prospecting, or B2B enrichment.
 
 ---
 
+## 21. Tool Tier Resolution — Free-First Fallback (MANDATORY)
+
+USE WHEN: **every tool call** — this rule governs how Claude selects between competing tools.
+
+When multiple tools can serve the same function, follow this strict order:
+
+| Tier | Definition | Behaviour |
+|---|---|---|
+| **Tier 1 — Free / Local / OS** | No API key, runs on user's machine or is fully open-source | **Always try first.** Use without asking. |
+| **Tier 2 — Freemium** | Has a free tier but may consume credits | **Ask before using.** State: _"I can use [tool] (free tier). It may consume credits. Proceed?"_ |
+| **Tier 3 — Paid / Premium** | Requires a paid subscription or per-call billing | **Explicit approval required.** State cost implications. Never call silently. |
+
+**Resolution flow:**
+1. Check if a Tier 1 tool is available for the task (e.g., `searxng` for web search, `duckdb` for data analysis).
+2. If Tier 1 is unavailable → inform the user, propose Tier 2 with the caveat.
+3. If Tier 2 is also unavailable → propose Tier 3 with cost warning, OR offer a degraded manual path.
+4. If all tiers are unavailable → state the gap, give the install command, and offer the manual fallback (paste content, upload file, etc.).
+
+**Tier map per capability (see §15 for full details):**
+
+| Capability | Tier 1 (free) | Tier 2 (freemium) | Tier 3 (paid) |
+|---|---|---|---|
+| Web search | `searxng`, `fetch` | `brave-search`, `tavily` | Perplexity, Exa |
+| Web scraping | `puppeteer`, `rag-web-browser` | — | Firecrawl (paid plan) |
+| Data analysis | `duckdb`, `sqlite` | — | BigQuery, Snowflake |
+| Vector memory | `qdrant` | — | Pinecone, Weaviate |
+| Code sandbox | `docker`, `microsandbox` | `e2b` | — |
+| Charts | `echarts`, `mermaid`, `vegalite` | — | — |
+| Security scanning | `semgrep`, `osv` | — | Snyk, SonarCloud |
+| Monitoring | `signoz`, `victoriametrics` | — | Datadog, New Relic |
+| Version control | `github`, `gitlab`, `git` | — | — |
+| Knowledge mgmt | `obsidian`, `apple-notes` | Notion | — |
+
+Full map: [`docs/ADDING-INTEGRATIONS.md`](docs/ADDING-INTEGRATIONS.md)
+
+---
+
 ## Decision Rules (follow automatically)
 
 1. **User reports a problem** → code-review-graph (IF available — structural context) → Serena (symbol-level detail) → claude-mem (past issues) → `systematic-debugging` skill BEFORE responding.
 2. **User asks "how do I…"** → graphify (architecture / design rationale, IF available) → Context7 (library docs) → Serena (existing patterns) → claude-mem (past solutions).
-3. **User shares a URL** → Playwright to browse it.
+3. **User shares a URL** → Playwright to browse it. If URL is a research target → also delegate to `shine-web-researcher` agent for deep retrieval.
 4. **Starting any non-trivial task** → check superpowers skills (brainstorming, debugging, TDD).
 5. **Making code changes** → code-review-graph `get_impact_radius` + `get_affected_flows` (IF available) → Serena `find_referencing_symbols` → code-simplifier after.
 6. **Completing work** → `verification-before-completion` skill + `code-reviewer` agent.
 7. **Multiple independent tasks** → `dispatching-parallel-agents` or Agent Teams.
-8. **User references past work** → claude-mem search.
+8. **User references past work** → claude-mem search → `qdrant` MCP vector search (IF connected) for semantic recall.
 9. **Frontend/UI work** → graphify (component arch, IF available) → `ui-ux-pro-max` skill.
 10. **Complex multi-step project** → SHINE skills for phased management.
 11. **External library usage** → Context7 for docs, ALWAYS.
@@ -393,6 +558,15 @@ USE WHEN: the user asks for contact discovery, prospecting, or B2B enrichment.
 18. **Mention of cookies, consent, PII, GDPR, AI Act, DPIA** → route through the compliance guard BEFORE drafting. (see §18)
 19. **Request for a proposal / quote / SOW** → apply MoSCoW + MD estimates + ~15 % discount + Italian-by-default, propose call before send. (see §19)
 20. **Request for lead enrichment / prospecting** → local scripts first, label inferred emails, structured output, GDPR-aware. (see §20)
+21. **Any tool selection with free and paid alternatives** → always try Tier 1 (free/local) first. ASK before Tier 2 (freemium). REQUIRE explicit approval for Tier 3 (paid). Never silently consume credits. (see §21)
+22. **User asks for web research / competitive intel / "search for" / "find out about"** → delegate to `shine-web-researcher` agent OR run `/shine-web-research` skill. Tool order: `searxng` (Tier 1) → `fetch` (Tier 1) → `brave-search` (Tier 2, ASK) → `tavily` (Tier 2, ASK) → Perplexity (Tier 3, REQUIRE approval) → manual fallback (ask user to paste). Every claim cited with [Source: URL, date]. Never fabricate sources.
+23. **User provides a data file (CSV, Parquet, JSON, Excel) OR asks for data analysis / SQL / "analyze this"** → delegate to `shine-data-engineer` agent OR run `/shine-data-query` skill. Tool order: `duckdb` MCP (Tier 1) → `sqlite` MCP (Tier 1) → `excel` MCP for .xlsx (Tier 1) → Python pandas via Bash (fallback). Profile schema first, then execute. Never upload data externally.
+24. **User asks for a chart / visualization / graph / diagram** → delegate to `shine-chart-builder` agent OR run `/shine-chart` skill. Tool map: quantitative → `echarts` MCP; structural → `mermaid` MCP; statistical → `vegalite` MCP; fallback → standalone HTML with CDN libraries. Always label axes with units, cite data source.
+25. **User asks for security scan / vulnerability check / "is this code secure?"** → delegate to `shine-vulnerability-scanner` agent OR run `/shine-security-scan` skill. Tool chain: `semgrep` MCP (Tier 1) → Semgrep CLI via Bash (fallback). For dependencies: `osv` MCP (Tier 1) → `npm audit`/`pip audit` (fallback). For SSL/domains: `sslmon` MCP (Tier 1) → `openssl s_client` (fallback). Read-only — never auto-fix.
+26. **User asks to run untrusted code / "try this script" / "execute in sandbox"** → delegate to `shine-sandbox-runner` agent OR run `/shine-sandbox` skill. Risk-assess first: 🔴 untrusted = MUST sandbox. Tool chain: `docker` MCP (Tier 1) → `microsandbox` (Tier 1) → Docker CLI via Bash → `e2b` (Tier 2, ASK). Never run 🔴-risk code directly on host.
+27. **User asks for dependency audit / "any CVEs?" / "check for vulnerabilities in packages"** → run `/shine-dep-audit` skill. Tool: `osv` MCP (Tier 1) → `npm audit`/`pip audit`/`govulncheck` (fallback). Report CVE + CVSS + fix version for each. Never auto-upgrade without approval.
+28. **User asks for network diagnostics / "check DNS" / "why is the site slow?" / "SSL status"** → run `/shine-network-check` skill. Tools: `globalping` MCP (Tier 1) → `sslmon` MCP (Tier 1) → `ping`/`dig`/`traceroute`/`openssl` via Bash (fallback). Read-only diagnostics only — never run port scans without approval.
+29. **User asks to remember / store knowledge / "save this for later" OR recall / "what did we do about X"** → run `/shine-vector-search` skill. Tool: `qdrant` MCP (Tier 1) → `claude-mem` plugin (fallback) → grep `~/.claude/memory/` (last resort). Never store PII or secrets in vector DB.
 
 ---
 

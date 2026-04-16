@@ -15,7 +15,7 @@ _SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
   <img src="docs/shine_code_system_v2_01_system_overview_board.webp" alt="SHINE Code System overview board" width="90%">
 </p>
 
-***SHINE Code System turns Claude Code into an orchestrator. Instead of telling Claude which tool to use every time, a single global `CLAUDE.md` with **20 decision rules** pattern-matches every prompt to the right tool chain — automatically. Add a persistent `MEMORY.md` layer that survives across conversations, and you have an auto-pilot calibrated for consulting, MarTech, and digital-agency work.***
+***SHINE Code System turns Claude Code into an orchestrator. Instead of telling Claude which tool to use every time, a single global `CLAUDE.md` with **29 decision rules** pattern-matches every prompt to the right tool chain — automatically. Add a persistent `MEMORY.md` layer that survives across conversations, a **60+ MCP capability map** with free-first tiered fallback, and you have an auto-pilot calibrated for consulting, MarTech, and digital-agency work.***
 
 Built by [diShine Digital Agency](https://dishine.it).
 
@@ -31,7 +31,7 @@ Built by [diShine Digital Agency](https://dishine.it).
 
 ![SHINE business value map](docs/business-value.svg)
 
-<sub>👀 Diagram: `docs/business-value.svg` — three bands: **① Business input** (brief, inbox thread, lead list, bug ticket, campaign idea, GDPR question) → **② SHINE engine** (20 decision rules · typed memory · 138 skills · 39 agents · 7 hooks · always-on guardrails) → **③ Business deliverables** (proposal, email draft, lead CSV, fix + 5-section report, campaign brief, GDPR verdict). ROI band: 3–8× faster drafting, on-brand every time, GDPR-native, institutional memory that survives staff churn.</sub>
+<sub>👀 Diagram: `docs/business-value.svg` — three bands: **① Business input** (brief, inbox thread, lead list, bug ticket, campaign idea, GDPR question) → **② SHINE engine** (29 decision rules · typed memory · 146 skills · 45 agents · 7 hooks · 60+ MCP servers · always-on guardrails) → **③ Business deliverables** (proposal, email draft, lead CSV, fix + 5-section report, campaign brief, GDPR verdict). ROI band: 3–8× faster drafting, on-brand every time, GDPR-native, institutional memory that survives staff churn.</sub>
 
 ---
 
@@ -63,8 +63,9 @@ Built by [diShine Digital Agency](https://dishine.it).
 
 Most Claude Code setups treat the AI as an assistant that needs manual tool selection on every turn. SHINE flips the model:
 
-- **One brain** — a global `CLAUDE.md` with 20 decision rules that map *intent* → *tool chain* automatically
+- **One brain** — a global `CLAUDE.md` with 29 decision rules that map *intent* → *tool chain* automatically
 - **One memory** — a typed `MEMORY.md` index shared across every project, so context isn't rebuilt from scratch each session
+- **60+ MCP capability map** — 20 categories of free/open-source tools (search, analytics, vector memory, sandbox, charts, security, etc.) with **tiered fallback**: free first, freemium after asking, paid only with explicit approval
 - **Agency-calibrated** — built for consultants, PMs, and digital agencies: GDPR/cookie audits, SEO/MarTech checks, client-comms in Italian/French/English, `CLIENT | Topic` email format, factual-RAG discipline
 - **Auto-updating** — `integration-sync.js` rewrites the relevant section of `CLAUDE.md` every time a plugin is installed or removed
 - **Reversible** — atomic backup on install, one-command uninstall, `--dry-run` everywhere
@@ -73,10 +74,11 @@ Most Claude Code setups treat the AI as an assistant that needs manual tool sele
 
 ```
 settings.json  →  Global Memory  →  CLAUDE.md  →  Hooks
- (plugins,        (typed index,     (20 rules,     (lifecycle
-  env vars,         shared           orchestrates    automation
-  telemetry)        across           every tool)     & guards)
-                    projects)
+ (plugins,        (typed index,     (29 rules,     (lifecycle
+  MCP servers,      shared           orchestrates    automation
+  env vars,         across           every tool      & guards)
+  telemetry)        projects)        + tiered
+                                     fallback)
 ```
 
 ---
@@ -85,22 +87,23 @@ settings.json  →  Global Memory  →  CLAUDE.md  →  Hooks
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║           ✨  SHINE Claude Code Framework  v1.0.0  ✨           ║
+║           ✨  SHINE Claude Code Framework  v2.0.0  ✨           ║
 ╠══════════════════════════════════════════════════════════════════╣
-║  39 agents  ·  138 skills  ·  7 hooks  ·  20 decision rules     ║
-║  16 plugins ·  5 docs      ·  2 statuslines ·  CI validated     ║
+║  45 agents  ·  146 skills  ·  7 hooks  ·  29 decision rules     ║
+║  16 plugins ·  60+ MCP map ·  6 docs   ·  20 capability tiers   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
 | Metric | Count | Breakdown |
 |---|---:|---|
-| 🤖 **Agents** | **39** | 21 engineering + 18 agency |
-| 🧩 **Skills** | **138** | 61 core · 17 early-agency · 10×4 new-agency · 8 ops · 6 data · 7 brand/misc |
+| 🤖 **Agents** | **45** | 21 engineering + 18 agency + 6 MCP-capability (web-researcher, data-engineer, vulnerability-scanner, chart-builder, sandbox-runner, infra-ops) |
+| 🧩 **Skills** | **146** | 61 core · 17 early-agency · 10×4 new-agency · 8 ops · 6 data · 7 brand/misc · 8 MCP-capability |
 | 🪝 **Hooks** | **7** | 3 SessionStart · 2 PreToolUse · 1 PostToolUse · 1 PreCompact |
-| 📜 **Decision rules** | **20** | 15 dev-centric + 5 agency (§16–§20) |
+| 📜 **Decision rules** | **29** | 15 dev-centric + 5 agency (§16–§20) + 1 tiered fallback (§21) + 8 MCP-capability (§22–§29) |
 | 🔌 **Plugins** | **16** | 11 official · 2 LSP · 3 third-party |
-| 📚 **Docs** | **5** | ARCHITECTURE · HOW-IT-WORKS · CUSTOMIZATION · PLUGINS · AGENCY-WORKFLOWS |
-| 🛡️ **Guardrails** | **All-session** | RAG discipline · never-auto-send · PII-aware · atomic backup |
+| 🌐 **MCP capability map** | **60+** | 20 categories · Tier 1 free/local · Tier 2 freemium · Tier 3 paid |
+| 📚 **Docs** | **6** | ARCHITECTURE · HOW-IT-WORKS · CUSTOMIZATION · PLUGINS · ADDING-INTEGRATIONS · AGENCY-WORKFLOWS |
+| 🛡️ **Guardrails** | **All-session** | RAG discipline · never-auto-send · PII-aware · atomic backup · tiered fallback |
 | 🌍 **Languages** | **4** | 🇮🇹 IT · 🇫🇷 FR · 🇬🇧 EN · 🇪🇸 ES |
 
 ### Skill distribution
@@ -138,7 +141,7 @@ compliance & ops   ██                                                       
 
 ![SHINE architecture diagram](docs/architecture.svg)
 
-<sub>👀 Diagram: `docs/architecture.svg` — dependency chain from `settings.json` → Global Memory → `CLAUDE.md` (20 rules, with §16–§20 agency pills highlighted) → Execution layer (138 skills · 39 agents · 16 plugins) → 7 hooks (SessionStart / PreToolUse / PostToolUse / PreCompact). Always-on guardrails rail at the bottom: RAG discipline, never-auto-send, PII-aware, atomic backup, 🇮🇹🇫🇷🇬🇧🇪🇸 tone, reversible install.</sub>
+<sub>👀 Diagram: `docs/architecture.svg` — dependency chain from `settings.json` → Global Memory → `CLAUDE.md` (29 rules, with §16–§20 agency pills + §21 tiered fallback + §22–§29 MCP-capability rules highlighted) → Execution layer (146 skills · 45 agents · 16 plugins · 60+ MCP servers) → 7 hooks (SessionStart / PreToolUse / PostToolUse / PreCompact). Always-on guardrails rail at the bottom: RAG discipline, never-auto-send, PII-aware, tiered fallback, atomic backup, 🇮🇹🇫🇷🇬🇧🇪🇸 tone, reversible install.</sub>
 
 Full runtime walkthrough in [`docs/HOW-IT-WORKS.md`](docs/HOW-IT-WORKS.md).
 
@@ -172,14 +175,14 @@ No manual tool selection. The rules handle orchestration.
 
 | Component | Count | Description |
 |-----------|-------|-------------|
-| **`CLAUDE.md`** | 1 | Global instructions — 16 sections, **20 decision rules** (5 agency-specific) |
+| **`CLAUDE.md`** | 1 | Global instructions — 16 sections, **21 decision rules** (5 agency-specific + 1 tiered fallback) + 60+ MCP capability map |
 | **`MEMORY.md`** | 1 typed index | Typed persistent memory (preference / client / project / style / external) |
 | **SHINE Agents** | **39** | 21 core engineering (planner, executor, verifier, debugger, auditors, researchers) + 18 agency (client-researcher, proposal-writer, gdpr-analyst, seo-strategist, martech-architect, copywriter, …) |
 | **SHINE Skills** | **138** | 61 core SHINE + 17 early agency + 10 marketing · 10 sales · 10 consulting · 10 tech · 8 ops · 6 data · 4 brand · 3 misc |
 | **Hooks** | 7 | SessionStart (3) · PreToolUse (2) · PostToolUse (1) · PreCompact (1) |
 | **Plugins & MCP** | 16 plugins + 4 marketplaces | serena, context7, playwright, superpowers, code-simplifier, ralph-loop, typescript-lsp, pyright-lsp, pyright, basedpyright, supabase, agent-sdk-dev, claude-code-setup, ui-ux-pro-max, claude-mem, arize-skills |
 | **Statusline** | 2 variants | `.js` (cross-platform, no deps) + `.sh` (pure bash, no `jq` required) — shows model · dir · branch · active-client · context size |
-| **Total slash commands** | **138** | All skills are user-invocable via `/<skill-name>` |
+| **Total slash commands** | **146** | All skills are user-invocable via `/<skill-name>` |
 
 ---
 
@@ -383,6 +386,17 @@ Agents are delegated via the Task tool. Each one returns a 5-section report: **S
 | 📊 **MarTech & data** | `shine-martech-architect`, `shine-seo-strategist`, `shine-data-analyst`, `shine-crm-operator` |
 | 🛡️ **Compliance & ops** | `shine-gdpr-analyst`, `shine-retro-facilitator` |
 
+### MCP-capability track (6) — NEW
+
+| Agent | MCP tools required | Trigger rule | Purpose |
+|---|---|---|---|
+| `shine-web-researcher` | `searxng`, `fetch`, `brave-search` | §22 | Deep web research with tiered search |
+| `shine-data-engineer` | `duckdb`, `sqlite`, `excel`, `echarts` | §23 | Local SQL analytics + visualization |
+| `shine-vulnerability-scanner` | `semgrep`, `osv`, `sslmon` | §25 | Code + dependency security scanning |
+| `shine-chart-builder` | `echarts`, `mermaid`, `vegalite` | §24 | Interactive charts and diagrams |
+| `shine-sandbox-runner` | `docker`, `microsandbox`, `e2b` | §26 | Isolated code execution |
+| `shine-infra-ops` | `docker`, `kubernetes`, `signoz`, `globalping` | §28 | Container/cluster/monitoring ops |
+
 ---
 
 ## 🔌 Plugins & MCP Servers
@@ -438,7 +452,7 @@ When the task matches the trigger, SHINE proactively suggests diShine's own open
 | PII anonymization before LLM ingestion | [dishine-data-safe-usb](https://github.com/diShine-digital-agency/dishine-data-safe-usb) |
 | Confidential audio transcription | [dishine-boardroom-ear](https://github.com/diShine-digital-agency/dishine-boardroom-ear) |
 
-> **Bring-your-own orchestration**: SHINE does **not** bundle advanced orchestration MCP servers (agent pools, neural tools, coordination). If you need those, install them yourself — `CLAUDE.md` has a BYO section documenting the pattern.
+> **60+ MCP capability map**: SHINE now maps **60+ recommended free/open-source MCP servers** across **20 categories** — search, analytics, vector memory, sandboxed execution, charting, security, monitoring, version control, file systems, research, knowledge management, communication, social media, cloud/infra, AI services, system automation, aggregators, geo, finance, dev tools. All follow **Rule #21 (Tiered Fallback)**: free/local first, freemium after asking, paid with explicit approval. See [`docs/ADDING-INTEGRATIONS.md`](docs/ADDING-INTEGRATIONS.md) for the full install guide.
 
 ---
 
@@ -536,7 +550,7 @@ Governance & ops:
 
 ### Decision-rule cheat sheet
 
-The 20 rules in `CLAUDE.md` at a glance:
+The 21 rules in `CLAUDE.md` at a glance:
 
 | # | Trigger | Routes to |
 |---:|---|---|
@@ -553,15 +567,24 @@ The 20 rules in `CLAUDE.md` at a glance:
 | 11 | library / framework question | `context7` plugin |
 | 12 | browser / screenshot / E2E | `playwright` plugin |
 | 13 | incident / outage / Sentry | `shine-debugger` + Sentry MCP |
-| 14 | DB / Supabase / SQL | `supabase` plugin |
+| 14 | DB / Supabase / SQL | `supabase` plugin + `duckdb` / `sqlite` MCP |
 | 15 | long-running investigation | Spawn sub-agent via Task |
 | **16** | **any factual claim** | **RAG — never fabricate** |
 | **17** | **client name + comm verb** | **Load client memory → `/draft-email`** |
 | **18** | **PII / personal data** | **`shine-gdpr-analyst` → `/gdpr-audit`** |
 | **19** | **proposta / proposal** | **`/proposal` (MoSCoW, MD, 15%)** |
 | **20** | **lead list / outbound** | **`/lead-enrich` + Apollo/Hunter** |
+| **21** | **tool selection with free + paid alternatives** | **Tiered fallback: Tier 1 (free) → Tier 2 (ask) → Tier 3 (approve)** |
+| **22** | **web research / search** | **`shine-web-researcher` · `/shine-web-research`** |
+| **23** | **local data / SQL analytics** | **`shine-data-engineer` · `/shine-data-query`** |
+| **24** | **charts / visualization** | **`shine-chart-builder` · `/shine-chart`** |
+| **25** | **security / vulnerability scan** | **`shine-vulnerability-scanner` · `/shine-security-scan`** |
+| **26** | **sandbox / run untrusted code** | **`shine-sandbox-runner` · `/shine-sandbox`** |
+| **27** | **dependency CVES audit** | **`/shine-dep-audit`** |
+| **28** | **network / DNS / SSL diag** | **`shine-infra-ops` · `/shine-network-check`** |
+| **29** | **vector memory store / recall** | **`/shine-vector-search`** |
 
-Rules 16–20 are the agency-specific additions that distinguish SHINE from a dev-only setup.
+Rules 16–20 are the agency-specific additions. Rule 21 governs cost-efficient tool selection. Rules 22–29 route to the expanded MCP capability map.
 
 ---
 
