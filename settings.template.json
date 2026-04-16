@@ -166,5 +166,48 @@
     }
   },
 
+  "_comment_mcp": "MCP servers — user-configured. Uncomment the ones you need. See docs/ADDING-INTEGRATIONS.md for the full guide. All follow Rule #21 (Tiered Fallback): free/local first.",
+  "mcpServers": {
+    "_comment": "Uncomment the servers you want. All Tier 1 (free) unless noted.",
+
+    "_comment_search": "--- SEARCH & WEB INTELLIGENCE ---",
+
+    "_comment_databases": "--- DATABASES & LOCAL ANALYTICS ---",
+
+    "_comment_vector": "--- VECTOR MEMORY & SEMANTIC SEARCH ---",
+
+    "_comment_sandbox": "--- SANDBOX & CODE EXECUTION ---",
+
+    "_comment_viz": "--- DATA VISUALIZATION ---",
+
+    "_comment_security": "--- SECURITY & SCANNING ---",
+
+    "_comment_monitoring": "--- MONITORING & OBSERVABILITY ---",
+
+    "_comment_vcs": "--- VERSION CONTROL ---",
+
+    "_comment_files": "--- FILE SYSTEMS ---",
+
+    "_comment_research": "--- RESEARCH & ACADEMIC ---",
+
+    "_comment_knowledge": "--- KNOWLEDGE MANAGEMENT ---",
+
+    "_comment_comms": "--- COMMUNICATION ---",
+
+    "_comment_social": "--- SOCIAL MEDIA ---",
+
+    "_comment_cloud": "--- CLOUD & INFRASTRUCTURE ---",
+
+    "_comment_ai": "--- AI SERVICES ---",
+
+    "_comment_system": "--- SYSTEM AUTOMATION ---",
+
+    "_comment_geo": "--- LOCATION & GEO ---",
+
+    "_comment_finance": "--- FINANCE ---",
+
+    "_comment_devtools": "--- DEV TOOLS (EXTENDED) ---"
+  },
+
   "alwaysThinkingEnabled": true
 }
