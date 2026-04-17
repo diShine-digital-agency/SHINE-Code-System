@@ -6,7 +6,7 @@
 
 _SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
 
-[![Website](https://img.shields.io/badge/Website-dishine.it-blue)](https://dishine.it/)
+[![Website](https://img.shields.io/badge/Website-dishine.it-blue)](https://code.dishine.it/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-diShine-blue)](https://linkedin.com/company/100682596)
 [![Location](https://img.shields.io/badge/Location-Milan%2C%20Italy-green)]()
 [![License: CC0](https://img.shields.io/badge/License-CC0%201.0-lightgrey)](LICENSE)
@@ -18,6 +18,8 @@ _SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
 ***SHINE Code System turns Claude Code into an orchestrator. Instead of telling Claude which tool to use every time, a single global `CLAUDE.md` with **29 decision rules** pattern-matches every prompt to the right tool chain — automatically. Add a persistent `MEMORY.md` layer that survives across conversations, a **60+ MCP capability map** with free-first tiered fallback, and you have an auto-pilot calibrated for consulting, MarTech, and digital-agency work.***
 
 Built by [diShine Digital Agency](https://dishine.it).
+
+More details on [it's official website](https://code.dishine.it).
 
 </div>
 
