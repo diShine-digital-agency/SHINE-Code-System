@@ -2,7 +2,7 @@
 
 This doc explains **how the SHINE Claude Code Framework is organized on disk and at runtime.** If you want a higher-level walkthrough of what happens during a session, see [HOW-IT-WORKS.md](./HOW-IT-WORKS.md).
 
-![SHINE business value map](./business-value.svg)
+![SHINE business value map](./business-value2.svg)
 
 <sub>Business-view companion: input → engine → deliverables, with always-on guardrails and ROI framing. Use this when explaining SHINE to stakeholders who don't need the on-disk details below.</sub>
 
