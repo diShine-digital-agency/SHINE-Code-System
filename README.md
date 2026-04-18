@@ -19,7 +19,7 @@ _SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
 
 Built by [diShine Digital Agency](https://dishine.it).
 
-### More details on [it's official website](https://code.dishine.it).
+# More details on [it's official website](https://code.dishine.it).
 
 </div>
 
@@ -560,6 +560,8 @@ Governance & ops:
 | [`SECURITY.md`](./SECURITY.md) | Vulnerability reporting (security@dishine.it) |
 | [`CHANGELOG.md`](./CHANGELOG.md) | Version history |
 | [`.github/workflows/validate.yml`](./.github/workflows/validate.yml) | CI: bash + node syntax, JSON validity, frontmatter, dead-ref, secret scan |
+
+# Official wiki available on [it's official website](https://code.dishine.it).
 
 ### Decision-rule cheat sheet
 
