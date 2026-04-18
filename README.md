@@ -19,7 +19,7 @@ _SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
 
 Built by [diShine Digital Agency](https://dishine.it).
 
-# More details on [it's official website](https://code.dishine.it).
+# More details on [the official website](https://code.dishine.it).
 
 </div>
 
