@@ -202,28 +202,59 @@ cd SHINE-Code-System
 # Preview what will happen (no changes made):
 ./install.sh --dry-run
 
-# Install:
+# Install (interactive — prompts for context profile):
 ./install.sh
+
+# Or skip the picker:
+./install.sh --profile=minimal
 ```
 
 **What the installer does (in order):**
 1. Pre-flight checks (`claude`, `node`, `git`)
 2. Atomic backup of existing `~/.claude/` → `~/.claude-backup-<timestamp>/`
-3. Copies `CLAUDE.md`, agents, skills, hooks, statusline
-4. Seeds `MEMORY.md` template (never overwrites an existing one)
-5. Creates `settings.json` from template (never overwrites an existing one)
-6. Installs 20+ plugins via `claude plugins install` (idempotent — skips already-installed)
-7. Prints next-steps checklist
+3. Copies `CLAUDE.md` (slim core) + `shine/references/` (on-demand reference files)
+4. Copies agents, skills, hooks, statusline, profile CLI (`shine`)
+5. Seeds `MEMORY.md` template (never overwrites an existing one)
+6. Creates `settings.json` from template (never overwrites an existing one)
+7. **Asks which context profile to install** (or uses `--profile`)
+8. Installs **only the plugins that profile requires** via `claude plugins install` (idempotent)
+9. Activates the profile → rewrites `enabledPlugins` + `disabledMcpjsonServers` in `settings.json`
+10. Prints next-steps checklist
+
+### Context profiles
+
+SHINE 1.1 installs a **lean default** (`minimal`, ~15k context) and lets you lazy-load plugin bundles on demand. Profiles live in `~/.claude/shine/profiles/*.json`.
+
+| Profile | Context | Plugins included | Good for |
+|---|---|---|---|
+| `minimal` | ~15k | — | Writing, research, agency comms. **Default.** |
+| `writing` | ~20k | context7 | Long-form drafting when you occasionally need library docs |
+| `outbound` | ~35k | context7 + prospecting MCPs (Apollo, Gmail, CommonRoom) | Lead enrichment, cold email, CRM ops |
+| `seo` | ~40k | context7 + Ahrefs | SEO audits, GA4/GTM, content strategy |
+| `dev` | ~70k | serena, pyright, basedpyright, typescript-lsp, playwright, supabase, code-simplifier, superpowers | Full engineering stack |
+| `full` | ~95k | all 16 plugins (previous default) | Only when you have headroom |
+
+Switch any time:
+
+```bash
+shine list                # list profiles + token estimates
+shine current             # which plugins/MCPs are active
+shine activate dev        # swap — restart Claude Code for changes
+shine show dev            # print the profile JSON
+```
+
+(If you didn't add `~/.claude/shine/bin` to your PATH, call `node ~/.claude/shine/bin/shine-profile.cjs <cmd>` directly.)
 
 ### Install flags
 
 | Flag | Effect |
 |------|--------|
+| `--profile=<name>` | Pre-select a profile (minimal\|writing\|outbound\|seo\|dev\|full). Skips the picker. |
 | `--dry-run` | Show every action, change nothing |
-| `--no-plugins` | Skip the `claude plugins install` loop (for air-gapped / offline setups) |
-| `--no-backup` | Skip the `~/.claude-backup-*` step (dangerous — use only in fresh installs) |
+| `--no-plugins` | Skip the `claude plugins install` loop (air-gapped / offline) |
+| `--no-backup` | Skip the `~/.claude-backup-*` step (dangerous — fresh installs only) |
 | `--no-symlink` | Don't symlink project memory dirs to global memory (opt-out) |
-| `--non-interactive` | Fail instead of prompting when a decision is needed |
+| `--non-interactive` | Fail instead of prompting when a decision is needed (requires `--profile`) |
 | `--help` | Show all flags |
 
 ### After install
@@ -408,7 +439,7 @@ Agents are delegated via the Task tool. Each one returns a 5-section report: **S
 
 ## 🔌 Plugins & MCP Servers
 
-All plugins are installed via `claude plugins install` during setup (skip with `--no-plugins`). Full map at [`docs/PLUGINS.md`](docs/PLUGINS.md).
+Plugins are installed via `claude plugins install` during setup — **only the ones your chosen profile requires** (skip all with `--no-plugins`). Switch profiles any time with `shine activate <name>`. Full map at [`docs/PLUGINS.md`](docs/PLUGINS.md).
 
 ### Official marketplace (`claude-plugins-official`) — 11 plugins
 | Plugin | Purpose |

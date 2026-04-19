@@ -9,11 +9,50 @@ Everything in SHINE is plain Markdown + JSON + small scripts. You can extend or 
 | File / dir | Edit? | Notes |
 |---|---|---|
 | `~/.claude/CLAUDE.md` | ✅ Yes, **outside** the auto-sync block | The block `<!-- shine:plugins:begin --> … <!-- shine:plugins:end -->` is rewritten on every SessionStart by `integration-sync.js` |
-| `~/.claude/settings.json` | ✅ Yes | Change the model, add your own MCP servers, tweak hook timeouts |
+| `~/.claude/settings.json` | ✅ Yes | Change the model, add your own MCP servers, tweak hook timeouts. `enabledPlugins` + `disabledMcpjsonServers` are managed by `shine activate` — prefer that CLI over hand-editing. |
+| `~/.claude/shine/profiles/*.json` | ✅ Yes (add your own) | Copy an existing profile, customise, then `shine activate <your-name>`. |
+| `~/.claude/shine/references/*.md` | ✅ Yes | These are the on-demand reference files (decision-rules, integrations-map, agency-playbook, tool-tiers, mcp-capability-map). Edit to match your own conventions. |
 | `~/.claude/memory/*.md` | ✅ Yes | Add new client / project / style / external files |
 | `~/.claude/agents/*.md` | ✅ Yes for your own, ⚠️ avoid editing `shine-*` directly | If you rewrite a SHINE agent, an update will overwrite it. Copy to a new name instead. |
 | `~/.claude/skills/<you>/` | ✅ Yes | Your own skills live next to the shipped ones |
 | `~/.claude/hooks/*` | ⚠️ Edit with care | These run on every session / tool call. A crash fails open (exit 0) except `shine-prompt-guard.js`. |
+
+---
+
+## 1a. Building a custom context profile
+
+The 6 shipped profiles cover most cases, but you can create your own. Each profile is a JSON file at `~/.claude/shine/profiles/<name>.json` with this schema:
+
+```jsonc
+{
+  "name": "my-profile",
+  "description": "One-line human summary, shown in `shine list`.",
+  "estimatedContextTokens": 45000,
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "serena@claude-plugins-official": true
+  },
+  "disabledMcpjsonServers": [
+    "Desktop_Commander",
+    "Claude_in_Chrome"
+  ]
+}
+```
+
+Then activate:
+
+```bash
+shine list                 # verify it appears
+shine show my-profile      # double-check JSON
+shine activate my-profile  # rewrites ~/.claude/settings.json atomically
+# restart Claude Code
+```
+
+**Tips when building a profile:**
+- Start from an existing profile (`cp minimal.json my-profile.json`) and add only what you need.
+- `enabledPlugins` uses fully-qualified names — format is `<plugin>@<marketplace>` (e.g., `serena@claude-plugins-official`).
+- `disabledMcpjsonServers` is for MCPs already in your `settings.json` / `~/.claude.json` `mcpServers` block. It does not uninstall them — it tells Claude Code not to load their tool schemas in this profile.
+- Estimate tokens empirically: activate the profile, run Claude Code, check `/context` or the statusline for the actual cost, update the JSON field. `estimatedContextTokens` is only a hint for the picker.
 
 ---
 

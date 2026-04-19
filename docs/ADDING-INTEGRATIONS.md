@@ -100,6 +100,25 @@ Add entries under `"mcpServers"`:
 2. Claude can now **call the MCP's tools** without further setup.
 3. For optimal routing, **add a decision rule** (see §3 below).
 
+### Suppressing an MCP per profile
+
+Every MCP loads its tool schemas into context — some are hundreds of tools. If you've installed an MCP but don't need it in every session, add it to the active profile's `disabledMcpjsonServers`:
+
+```jsonc
+// ~/.claude/shine/profiles/writing.json
+{
+  "name": "writing",
+  "disabledMcpjsonServers": [
+    "Desktop_Commander",
+    "Claude_in_Chrome",
+    "Apollo",
+    "Figma"
+  ]
+}
+```
+
+Then `shine activate writing` and restart. The MCP stays connected (settings.json unchanged in that regard), but its tools don't occupy context. Switch to a different profile when you need it back.
+
 ---
 
 ## 2. Full MCP server reference (by category)

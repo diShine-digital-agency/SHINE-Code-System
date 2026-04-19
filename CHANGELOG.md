@@ -6,6 +6,54 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [1.1.0] — 2026-04-18
+
+**Context Efficiency Release.** SHINE 1.0 auto-enabled all 16 plugins on install, pushing baseline context to ~95k — combined with user-configured MCPs and a large `CLAUDE.md`, many sessions crossed Claude Code's effective token budget and became unusable. 1.1 introduces **context profiles**, slims the always-loaded instruction file, and makes plugin activation opt-in and switchable.
+
+### Added
+
+- **Context profile system** (`shine/profiles/*.json`) — 6 curated bundles declaring `enabledPlugins` + `disabledMcpjsonServers` + `estimatedContextTokens`:
+  - `minimal` (~15k) — no plugins. New default.
+  - `writing` (~20k) — context7.
+  - `outbound` (~35k) — context7 + prospecting MCPs kept (Apollo, Gmail, CommonRoom).
+  - `seo` (~40k) — context7 + Ahrefs kept.
+  - `dev` (~70k) — full engineering stack (serena, LSPs, playwright, supabase, code-simplifier, superpowers).
+  - `full` (~95k) — all 16 plugins (parity with previous default).
+- **`shine-profile.cjs`** — Node CLI that atomically rewrites `~/.claude/settings.json`'s `enabledPlugins` and `disabledMcpjsonServers` from a selected profile. Commands: `list`, `show <name>`, `activate <name>`, `current`. Atomic via `fs.renameSync` from `.tmp`.
+- **`shine` bash shim** (`shine/bin/shine`) — unified CLI dispatching to `shine-profile.cjs` (`activate|list|show|current|profile`) and `shine-tools.cjs` (`doctor|onboard|help|index-skills|--version`). Add `~/.claude/shine/bin` to PATH to call `shine` directly.
+- **`install.sh --profile=<name>`** — CLI flag and interactive picker (6 options, default `minimal`). Installer now parses the selected profile JSON via `node` to determine which `plugin@marketplace` entries to install — instead of the fixed 16-plugin loop.
+- **`shine/references/integrations-map.md`** — full task-to-integration routing (was `CLAUDE.md` §§1-14). Loaded on demand.
+- **`shine/references/mcp-capability-map.md`** — BYO MCP inventory (was `CLAUDE.md` §15).
+- **`shine/references/agency-playbook.md`** — tone switching, GDPR guard, proposal assembly, lead enrichment (was `CLAUDE.md` §§17-20).
+- **`shine/references/tool-tiers.md`** — free-first fallback rule (was `CLAUDE.md` §21).
+- **`shine/references/decision-rules.md`** — full 29-rule matrix (was `CLAUDE.md` Decision Rules).
+
+### Changed
+
+- **`settings.template.json`** — the key fix. `enabledPlugins` now defaults to `{}` (was 16 entries = true), `alwaysThinkingEnabled` flipped to `false`, `disabledMcpjsonServers` added with explanatory comment. Baseline context drops from ~95k to ~15k.
+- **`CLAUDE.md`** — split from 31,798 bytes to ~6,300 bytes (80% reduction). Slim core retains identity, auto-use principle, top-level decision rules, and the full §16 Factual / RAG Discipline table (unchanged, MANDATORY). Detailed routing, MCP maps, agency playbooks, and the 29-rule matrix moved to `shine/references/*.md` for on-demand loading.
+- **`install.sh`** — profile-aware install flow. Copies `shine-profile.cjs`, the `shine` shim, and `shine/profiles/*.json`; runs `shine-profile activate` at end of install to sync `settings.json` with the chosen profile. Help text and next-steps output document the `shine activate` command.
+- **`shine/VERSION`** — bumped `1.0.3` → `1.1.0`.
+- **`README.md`** — new "Context profiles" subsection under Quick install, `--profile` flag documented in flags table, plugin section now describes profile-gated install.
+- **`QUICKSTART.md`** — install step renumbered and extended with profile picker, new step 3 "Switch context profile", troubleshooting rows for heavy-context symptoms and missing MCPs.
+
+### Fixed
+
+- **`hooks/shine-check-update.js`** — corrected hardcoded repo slug from the stale `diShine-digital-agency/shine-claude-code-framework` to `diShine-digital-agency/SHINE-Code-System`. Previously every update-check silently 404'd.
+
+### Migration from 1.0.x
+
+1. Pull the latest `SHINE-Code-System` and re-run `./install.sh` — your existing `~/.claude/` is backed up atomically before any change.
+2. Pick a profile when prompted (suggestion: `minimal` for marketing work, `dev` for coding, `outbound` for prospecting).
+3. Switch any time with `shine activate <name>` and restart Claude Code.
+4. No data loss: your `memory/`, `MEMORY.md`, and custom skills/agents are preserved.
+
+### Why this matters
+
+The SHINE 1.0 default combined with a typical user's claude.ai MCP server set easily crossed **200k tokens of context before the first prompt**. On Haiku 4.5 sessions with a 200k window, this meant repeated compaction, missing tool schemas, and degraded answer quality. The 1.1 profile system restores headroom: a `minimal` SHINE install + 5 user MCPs now sits comfortably under 40k, leaving 160k+ for actual work.
+
+---
+
 ## [1.0.0] — 2026-04-16
 
 Release focused on discoverability, cross-session learning, skill composition, factual-discipline tooling, and an onboarding path for first-time users.

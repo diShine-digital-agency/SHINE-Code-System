@@ -14,8 +14,8 @@ After `./install.sh`, `~/.claude/` looks like this:
 
 ```
 ~/.claude/
-├── CLAUDE.md                 # Global instructions — 29 decision rules, tone, RAG discipline, tiered fallback
-├── settings.json             # User-editable config (model, hooks, plugins, MCP, env)
+├── CLAUDE.md                 # Slim global instructions (~6KB) — identity, top rules, RAG discipline, pointers
+├── settings.json             # User-editable config (model, hooks, enabledPlugins, MCP, env)
 ├── statusline.js             # Default statusline renderer (Node)
 ├── statusline.sh             # Pure-bash fallback (no Node, no jq required)
 ├── agents/                   # 45 agent .md files (+ 7 on-demand partials) — invoked via the Task tool
@@ -26,8 +26,22 @@ After `./install.sh`, `~/.claude/` looks like this:
 ├── projects/                 # Per-project transcripts (Claude Code writes these)
 ├── tasks/ teams/ todos/      # Claude Code internal state
 ├── debug/ backups/ cache/    # Support dirs
-└── shine/VERSION             # Framework version marker (for update checks)
-```
+└── shine/
+    ├── VERSION               # Framework version marker (for update checks)
+    ├── bin/
+    │   ├── shine             # Bash shim — unified CLI
+    │   ├── shine-profile.cjs # Profile activator (rewrites settings.json atomically)
+    │   └── shine-tools.cjs   # doctor / onboard / index-skills / --version
+    ├── profiles/             # Context profiles: minimal.json, writing.json, outbound.json, seo.json, dev.json, full.json
+    ├── references/           # On-demand reference files loaded by skills/agents — NOT auto-loaded by CLAUDE.md
+    │   ├── integrations-map.md       # Full plugin/MCP routing (was CLAUDE.md §§1-14)
+    │   ├── mcp-capability-map.md     # BYO MCP inventory (was §15)
+    │   ├── agency-playbook.md        # Tone / GDPR / proposals / lead enrichment (was §§17-20)
+    │   ├── tool-tiers.md             # Free-first fallback (was §21)
+    │   ├── decision-rules.md         # Full 29-rule matrix
+    │   ├── questioning.md            # Discovery-question rules
+    │   └── ui-brand.md               # UI/brand conventions
+    └── templates/            # Deliverable templates (watermark.md, proposal.md, etc.)
 ```
 
 **Reversibility.** `install.sh` takes an atomic snapshot of any existing `~/.claude/` into `~/.claude-backup-<timestamp>/` before writing anything. `./uninstall.sh` restores the most recent snapshot; `./uninstall.sh --purge` wipes `~/.claude/` entirely with a typed confirmation.
@@ -56,13 +70,27 @@ After `./install.sh`, `~/.claude/` looks like this:
                                         free first)   PreCompact)
 ```
 
-### 2.1 CLAUDE.md is the router
+### 2.1 CLAUDE.md is the router (slim core + on-demand references)
 
-The 29 decision rules in `CLAUDE.md` are literal pattern-to-action mappings. Rules #1–#15 handle engineering tasks (plan / implement / debug / review). Rules §16–§20 cover agency workflows (factual RAG, watermarking, email, proposals, lead enrichment). Rule #21 is special — it governs **tool tier resolution** whenever multiple tools can serve the same function (free first, then freemium after asking, then paid with explicit approval). Rules §22–§29 map specific MCP-capability clusters (web research, local analytics, charts, security scanning, sandbox execution, monitoring, infra ops). Example:
+Since 1.1, `CLAUDE.md` is a **slim ~6KB core** that always loads. It contains: identity, auto-use principle, the top-level decision rules (condensed), the full §16 Factual / RAG Discipline table (MANDATORY — unchanged), memory pointers, and links to on-demand reference files in `shine/references/`.
+
+The 29-rule matrix, plugin-by-plugin routing, MCP inventory, and agency playbooks live in separate files that skills/agents read **only when needed**:
+
+| Reference file | Holds | Loaded when |
+|---|---|---|
+| `shine/references/decision-rules.md` | Full 29-rule matrix | Edge-case routing questions |
+| `shine/references/integrations-map.md` | Per-category plugin/MCP routing (§§1-14) | Choosing between two integrations |
+| `shine/references/mcp-capability-map.md` | BYO MCP inventory (§15) | User asks "what MCPs exist for X?" |
+| `shine/references/agency-playbook.md` | Tone, GDPR, proposals, lead enrichment (§§17-20) | Client-facing task |
+| `shine/references/tool-tiers.md` | Free-first fallback (§21) | Multiple tools could serve the same job |
+
+Rules #1–#15 still handle engineering (plan / implement / debug / review). §§16–§20 cover agency workflows (factual RAG, watermarking, email, proposals, lead enrichment). Rule #21 governs **tool tier resolution** (free first, freemium ASK, paid explicit-approval). Rules §§22–§29 map MCP-capability clusters (web research, local analytics, charts, security, sandbox, monitoring, infra).
+
+Example:
 
 > **Rule 17** — When the prompt contains a client name from `memory/*client-*.md` and a communication verb (reply, draft, follow up), load the matching `type: client` memory file + `style-email-*.md`, then run the `draft-email` skill.
 
-This is what makes the framework feel "smart": the routing is in plain Markdown, inspectable and editable by the user.
+The routing is in plain Markdown, inspectable and editable — **and now split by relevance** so the always-loaded context stays small.
 
 ### 2.2 Agents (45 + 7 partials)
 
@@ -125,15 +153,28 @@ Listed in `settings.template.json` and installed to `~/.claude/hooks/`:
 
 Every hook exits 0 on failure except `shine-prompt-guard.js`, which exits 2 to abort the offending tool call. Opt-outs via env vars (`SHINE_DISABLE_*`). The two `UserPromptSubmit` hooks emit structured JSON output — `shine-client-detect` uses the `additionalContext` directive documented by Claude Code to inject memory before the model reasons, which cuts Rule #17 / #19 / #20 latency by removing the "which client?" round-trip.
 
-### 2.5 Plugins & MCP
+### 2.5 Plugins & MCP (profile-gated since 1.1)
 
-Plugins are installed via `claude plugins install` during `install.sh`. The set ships with:
+Plugins are installed via `claude plugins install` during `install.sh` — **but only the subset required by the chosen context profile**. The framework supports all 16 plugins; which ones are _enabled_ depends on the profile you activate:
 
 - **Official marketplace**: serena, context7, playwright, superpowers, code-simplifier, ralph-loop, typescript-lsp, pyright-lsp, supabase, agent-sdk-dev, claude-code-setup
 - **LSP marketplace**: pyright, basedpyright
 - **Third-party**: ui-ux-pro-max, claude-mem, arize-skills
 
-MCP servers are user-configured. SHINE maps **60+ recommended MCP servers** across **20 capability categories** (search, databases, vector memory, sandbox, charts, security, monitoring, git, file systems, research, knowledge, comms, social, cloud, AI, system automation, aggregators, geo, finance, dev tools). All follow **Rule #21 (Tiered Fallback)** — free/local first, freemium after asking, paid only with explicit approval.
+**Context profiles** (`shine/profiles/*.json`) each declare `enabledPlugins`, `disabledMcpjsonServers`, and `estimatedContextTokens`. `shine activate <name>` atomically rewrites those fields in `~/.claude/settings.json`. Restart Claude Code for changes to take effect.
+
+| Profile | Plugins enabled | MCPs disabled | Context |
+|---|---|---|---|
+| `minimal` | — | — | ~15k |
+| `writing` | context7 | — | ~20k |
+| `outbound` | context7 | (keeps prospecting: Apollo, Gmail, CommonRoom) | ~35k |
+| `seo` | context7 | (keeps Ahrefs) | ~40k |
+| `dev` | serena, pyright, basedpyright, typescript-lsp, playwright, supabase, code-simplifier, superpowers | — | ~70k |
+| `full` | all 16 | — | ~95k |
+
+**Why this matters.** Pre-1.1, SHINE enabled all 16 plugins by default (~95k baseline). Combined with a user's claude.ai MCP set, sessions routinely crossed 200k before the first prompt. The profile system makes activation opt-in so the baseline is lean and predictable.
+
+MCP servers themselves are still user-configured — see [ADDING-INTEGRATIONS.md](./ADDING-INTEGRATIONS.md). Profiles can also _disable_ MCPs you've connected in `settings.json`, via the `disabledMcpjsonServers` array. All tools follow **Rule #21 (Tiered Fallback)** — free/local first, freemium after asking, paid only with explicit approval.
 
 See:
 - [PLUGINS.md](./PLUGINS.md) — full MCP map with tiers

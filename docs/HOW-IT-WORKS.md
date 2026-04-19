@@ -8,15 +8,17 @@ A narrative walkthrough of what happens from `claude` → response, so you can d
 
 When you run `claude` in a project directory:
 
-1. **Claude Code reads `~/.claude/settings.json`** — picks up the model, env vars, hooks, enabled plugins, MCP servers, and statusline command.
+1. **Claude Code reads `~/.claude/settings.json`** — picks up the model, env vars, hooks, `enabledPlugins` (profile-gated since 1.1), `disabledMcpjsonServers`, MCP servers, and statusline command.
 2. **SessionStart hooks fire in order** (5–15s timeouts each, all non-blocking on failure):
    - `global-memory-symlink.sh` — if `./memory` doesn't exist or is already a matching symlink, links it to `~/.claude/memory/`. Opt-out: `touch ~/.claude/.no-memory-symlink`.
    - `shine-check-update.js` — fetches the latest GitHub release tag (cached 24h) and prints a stderr notice if you're behind.
    - `integration-sync.js` — rewrites the `<!-- shine:plugins:begin -->` block inside `~/.claude/CLAUDE.md` so the routing rules always know what's connected.
-3. **CLAUDE.md is loaded into the system prompt**, along with any `memory/preference-*.md` files (always-on) and the auto-synced plugins/MCP block.
+3. **The slim `CLAUDE.md` (~6KB) loads into the system prompt**, along with any `memory/preference-*.md` files (always-on) and the auto-synced plugins/MCP block. On-demand reference files in `shine/references/` are **not** loaded yet — skills/agents read them when a rule actually needs them.
 4. **Statusline renders** — `statusline.js` prints `✨ SHINE · <model> · <cwd> · ⎇ <branch> · ◆ <client> · <ctx>KB`.
 
-You now see the prompt. The model has the 29 decision rules, your preferences, and the list of available plugins/MCP in context — but not client memory or project memory yet. Those load **just before reasoning** via the `UserPromptSubmit` hooks (§1a below) or lazily on demand later.
+You now see the prompt. The model has the core identity, top-level decision rules, the §16 Factual / RAG discipline table, your preferences, and pointers to the detailed references. It does **not** yet have client memory, project memory, the full 29-rule matrix, the MCP inventory, or the agency playbook — those load **just before reasoning** via the `UserPromptSubmit` hooks (§1a below) or lazily when a rule fires.
+
+**Context profile.** The set of plugins the model knows about is determined by the active profile in `~/.claude/shine/profiles/*.json`. Check with `shine current`; switch with `shine activate <name>` and restart the session.
 
 ### 1a. UserPromptSubmit pre-load (cuts §17 / §19 / §20 latency)
 

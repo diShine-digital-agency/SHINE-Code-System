@@ -1,12 +1,14 @@
 # SHINE — Plugins & MCP Map
 
-SHINE doesn't hard-depend on any plugin or MCP server. But the 29 decision rules in `CLAUDE.md` route to specific integrations when you have them connected. This doc tells you **which integration the framework expects for each kind of task**, how to install it, and what happens when it's missing.
+SHINE doesn't hard-depend on any plugin or MCP server. The 29 decision rules route to specific integrations **when you have them enabled in the active profile**. This doc lists every plugin the framework supports, how to install it, and what happens when it's missing.
+
+Since 1.1, plugins are **opt-in per profile**. The installer only runs `claude plugins install` on the plugins required by your chosen profile (`minimal` installs none; `dev` installs the full engineering stack). See [README.md#context-profiles](../README.md#context-profiles).
 
 ---
 
-## 1. Plugins shipped in `install.sh`
+## 1. Plugins supported by the framework
 
-Installed via `claude plugins install <name>` during setup (skippable with `--no-plugins`).
+Installed via `claude plugins install <name>` during setup — **only if the active profile requires them** (skippable entirely with `--no-plugins`). Run `shine current` to see which plugins are enabled in your session; run `shine activate <name>` to switch bundles.
 
 ### Official marketplace
 
@@ -263,7 +265,16 @@ For the **full integration guide** — including how to create matching agents, 
 
 ## 6. Disabling a plugin without uninstalling
 
-In `settings.json`:
+**Preferred: use a profile.** Switch to a profile that doesn't include the plugin:
+
+```bash
+shine activate minimal   # disables all plugins
+shine activate writing   # only context7
+```
+
+`shine activate` rewrites `enabledPlugins` in `settings.json` atomically. Restart Claude Code for changes to take effect.
+
+**Manual alternative:** Edit `settings.json` directly:
 
 ```jsonc
 "enabledPlugins": {
@@ -271,7 +282,15 @@ In `settings.json`:
 }
 ```
 
-It stays on disk but won't load. Flip back to `true` any time.
+It stays on disk but won't load. Flip back to `true` any time — but note that the next `shine activate` overwrites the whole block.
+
+**Disabling an MCP server** (without removing the connection):
+
+```jsonc
+"disabledMcpjsonServers": ["Desktop_Commander", "Claude_in_Chrome"]
+```
+
+The MCP stays configured but its tool schemas aren't loaded into context. Profiles set this array to suppress irrelevant MCPs per use case (e.g., `outbound` disables dev-oriented MCPs).
 
 ---
 
