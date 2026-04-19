@@ -120,24 +120,11 @@
     "command": "node ~/.claude/statusline.js"
   },
 
-  "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true,
-    "serena@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "supabase@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "pyright@claude-code-lsps": true,
-    "basedpyright@claude-code-lsps": true,
-    "superpowers@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "agent-sdk-dev@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true,
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
-    "claude-mem@thedotmack": true,
-    "arize-skills@Arize-ai-arize-skills": true
-  },
+  "_comment_plugins": "SHINE ships with NO plugins enabled by default — each plugin loads MCP tools/skills into every session, eating context tokens. Pick a curated bundle by running: shine activate <profile>. Profiles live in ~/.claude/shine/profiles/ (minimal, writing, outbound, seo, dev, full). To enable a plugin manually, set its key to true below.",
+  "enabledPlugins": {},
+
+  "_comment_disabled_mcps": "Force-disable specific MCP servers by name (useful for claude.ai web connectors that auto-load heavy tool schemas, e.g. Ahrefs, Figma, Postman, Supabase, Kubernetes). Also populated automatically by 'shine activate <profile>'.",
+  "disabledMcpjsonServers": [],
 
   "extraKnownMarketplaces": {
     "ui-ux-pro-max-skill": {
@@ -209,5 +196,6 @@
     "_comment_devtools": "--- DEV TOOLS (EXTENDED) ---"
   },
 
-  "alwaysThinkingEnabled": true
+  "_comment_thinking": "Extended thinking on every turn costs tokens. Off by default — flip to true for planning-heavy sessions, or set per-request via /ultrathink.",
+  "alwaysThinkingEnabled": false
 }

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # SHINE Claude Code Framework — installer
-# Usage: ./install.sh [--dry-run] [--no-plugins] [--no-backup] [--no-symlink] [--non-interactive] [--help]
+# Usage: ./install.sh [--profile=<name>] [--dry-run] [--no-plugins] [--no-backup] [--no-symlink] [--non-interactive] [--help]
 #
 # Safe by default: atomic backup of existing ~/.claude/ before any change.
 # Reversible: ./uninstall.sh restores the most recent backup.
+# Context-aware: installs the profile you pick (default: minimal). Switch any time with 'shine activate <profile>'.
 
 set -euo pipefail
 
@@ -13,6 +14,7 @@ NO_PLUGINS=0
 NO_BACKUP=0
 NO_SYMLINK=0
 NON_INTERACTIVE=0
+PROFILE="minimal"
 
 print_help() {
   cat <<EOF
@@ -21,17 +23,30 @@ SHINE Claude Code Framework — installer
 Usage: ./install.sh [flags]
 
 Flags:
+  --profile=<name>     Install a capability profile. One of:
+                         minimal  (default, ~15k context — no plugins)
+                         writing  (~20k — context7)
+                         outbound (~35k — prospecting stack)
+                         seo      (~40k — SEO stack)
+                         dev      (~70k — LSPs + serena + playwright)
+                         full     (~95k — ALL 16 plugins, not recommended)
   --dry-run            Show every action, change nothing.
-  --no-plugins         Skip 'claude plugins install' loop (offline / air-gapped).
+  --no-plugins         Skip 'claude plugins install' loop entirely (overrides profile).
   --no-backup          Skip the ~/.claude-backup-<timestamp>/ snapshot. DANGEROUS.
   --no-symlink         Do not symlink project memory dirs to global memory.
   --non-interactive    Fail instead of prompting when a decision is required.
   --help               Show this help and exit.
+
+After install you can change profile any time:
+  shine activate <name>        # atomic, restart Claude Code to apply
+  shine list                   # show all profiles
+  shine current                # show currently enabled plugins/MCPs
 EOF
 }
 
 for arg in "$@"; do
   case "$arg" in
+    --profile=*)       PROFILE="${arg#*=}" ;;
     --dry-run)         DRY_RUN=1 ;;
     --no-plugins)      NO_PLUGINS=1 ;;
     --no-backup)       NO_BACKUP=1 ;;
@@ -41,6 +56,12 @@ for arg in "$@"; do
     *) echo "Unknown flag: $arg" >&2; print_help; exit 2 ;;
   esac
 done
+
+# Validate profile name
+case "$PROFILE" in
+  minimal|writing|outbound|seo|dev|full) ;;
+  *) echo "Unknown profile: $PROFILE (expected minimal|writing|outbound|seo|dev|full)" >&2; exit 2 ;;
+esac
 
 # ─── Colors (TTY-safe) ──────────────────────────────────────────────────────
 if [ -t 1 ]; then
@@ -186,34 +207,57 @@ for d in projects sessions tasks teams todos debug backups cache; do
   run "mkdir -p \"$CLAUDE_DIR/$d\""
 done
 
-# ─── Plugins ────────────────────────────────────────────────────────────────
-if [ "$NO_PLUGINS" -eq 0 ]; then
-  info ""
-  info "Installing plugins (may take a few minutes)…"
+# ─── Profile selection (interactive) ────────────────────────────────────────
+# If user didn't pass --profile and we're interactive, offer the picker.
+if [ "$NON_INTERACTIVE" -eq 0 ] && [ "$PROFILE" = "minimal" ] && [ "$NO_PLUGINS" -eq 0 ]; then
   log ""
+  info "Pick a context profile:"
+  log "  1) minimal   — no plugins. Pure SHINE. ~15k context. (default, recommended)"
+  log "  2) writing   — context7. ~20k context."
+  log "  3) outbound  — context7 + prospecting stack. ~35k context."
+  log "  4) seo       — context7 + Ahrefs stack. ~40k context."
+  log "  5) dev       — LSPs + serena + playwright + supabase. ~70k context."
+  log "  6) full      — all 16 plugins. ~95k context. NOT recommended."
+  read -r -p "Choice [1]: " choice || choice=""
+  case "${choice:-1}" in
+    1|minimal)  PROFILE="minimal" ;;
+    2|writing)  PROFILE="writing" ;;
+    3|outbound) PROFILE="outbound" ;;
+    4|seo)      PROFILE="seo" ;;
+    5|dev)      PROFILE="dev" ;;
+    6|full)     PROFILE="full" ;;
+    *) warn "Unknown choice — defaulting to minimal."; PROFILE="minimal" ;;
+  esac
+fi
 
-  # Official marketplace
-  for p in serena context7 playwright superpowers code-simplifier ralph-loop \
-           typescript-lsp pyright-lsp supabase agent-sdk-dev claude-code-setup; do
-    log "  Installing $p…"
-    run "claude plugins install \"$p\" 2>/dev/null || echo '    (already installed or unavailable)'"
-  done
-
-  # LSP marketplace
-  for p in pyright basedpyright; do
-    log "  Installing $p (LSP)…"
-    run "claude plugins install \"$p\" --marketplace claude-code-lsps 2>/dev/null || echo '    (already installed or unavailable)'"
-  done
-
-  # Third-party
-  log "  Installing ui-ux-pro-max…"
-  run "claude plugins install ui-ux-pro-max --marketplace ui-ux-pro-max-skill 2>/dev/null || echo '    (already installed or unavailable)'"
-  log "  Installing claude-mem…"
-  run "claude plugins install claude-mem --marketplace thedotmack 2>/dev/null || echo '    (already installed or unavailable)'"
-  log "  Installing arize-skills…"
-  run "claude plugins install arize-skills --marketplace Arize-ai-arize-skills 2>/dev/null || echo '    (already installed or unavailable)'"
-else
+# ─── Plugins (profile-driven) ──────────────────────────────────────────────
+# Install only the plugins listed in the selected profile's enabledPlugins.
+# The profile file is at $SCRIPT_DIR/shine/profiles/$PROFILE.json.
+if [ "$NO_PLUGINS" -eq 0 ] && [ "$PROFILE" != "minimal" ]; then
+  PROFILE_FILE="$SCRIPT_DIR/shine/profiles/$PROFILE.json"
+  if [ ! -f "$PROFILE_FILE" ]; then
+    warn "Profile file missing: $PROFILE_FILE — skipping plugin install."
+  else
+    info ""
+    info "Installing plugins for profile '$PROFILE'…"
+    # Parse "plugin@marketplace": true lines with node
+    PLUGINS_RAW="$(node -e "const p=require('$PROFILE_FILE');for(const k of Object.keys(p.enabledPlugins||{})){if(p.enabledPlugins[k])console.log(k);}")"
+    while IFS= read -r entry; do
+      [ -z "$entry" ] && continue
+      plugin="${entry%@*}"
+      marketplace="${entry#*@}"
+      log "  Installing $plugin from $marketplace…"
+      if [ "$marketplace" = "claude-plugins-official" ]; then
+        run "claude plugins install \"$plugin\" 2>/dev/null || echo '    (already installed or unavailable)'"
+      else
+        run "claude plugins install \"$plugin\" --marketplace \"$marketplace\" 2>/dev/null || echo '    (already installed or unavailable)'"
+      fi
+    done <<< "$PLUGINS_RAW"
+  fi
+elif [ "$NO_PLUGINS" -eq 1 ]; then
   warn "Skipping plugin installation (--no-plugins)."
+else
+  dim "  Profile 'minimal' — no plugins to install."
 fi
 
 # ─── SHINE framework ────────────────────────────────────────────────────────
@@ -223,6 +267,7 @@ run "mkdir -p \"$CLAUDE_DIR/shine/bin\""
 run "mkdir -p \"$CLAUDE_DIR/shine/workflows\""
 run "mkdir -p \"$CLAUDE_DIR/shine/templates\""
 run "mkdir -p \"$CLAUDE_DIR/shine/references\""
+run "mkdir -p \"$CLAUDE_DIR/shine/profiles\""
 
 if [ -f "$SCRIPT_DIR/shine/VERSION" ]; then
   run "cp \"$SCRIPT_DIR/shine/VERSION\" \"$CLAUDE_DIR/shine/VERSION\""
@@ -235,6 +280,24 @@ if [ -f "$SCRIPT_DIR/shine/bin/shine-tools.cjs" ]; then
 fi
 if [ -f "$SCRIPT_DIR/shine/bin/shine-tools.test.cjs" ]; then
   run "cp \"$SCRIPT_DIR/shine/bin/shine-tools.test.cjs\" \"$CLAUDE_DIR/shine/bin/shine-tools.test.cjs\""
+fi
+
+# Profile manager runtime + shim
+if [ -f "$SCRIPT_DIR/shine/bin/shine-profile.cjs" ]; then
+  run "cp \"$SCRIPT_DIR/shine/bin/shine-profile.cjs\" \"$CLAUDE_DIR/shine/bin/shine-profile.cjs\""
+  run "chmod +x \"$CLAUDE_DIR/shine/bin/shine-profile.cjs\""
+  dim "  shine-profile.cjs installed."
+fi
+if [ -f "$SCRIPT_DIR/shine/bin/shine" ]; then
+  run "cp \"$SCRIPT_DIR/shine/bin/shine\" \"$CLAUDE_DIR/shine/bin/shine\""
+  run "chmod +x \"$CLAUDE_DIR/shine/bin/shine\""
+  dim "  shine CLI shim installed (add ~/.claude/shine/bin to PATH)."
+fi
+
+# Copy all profile JSONs
+if compgen -G "$SCRIPT_DIR/shine/profiles/*.json" >/dev/null; then
+  run "cp \"$SCRIPT_DIR/shine/profiles/\"*.json \"$CLAUDE_DIR/shine/profiles/\""
+  dim "  Profiles installed: minimal, writing, outbound, seo, dev, full."
 fi
 
 if compgen -G "$SCRIPT_DIR/shine/workflows/*.md" >/dev/null; then
@@ -293,6 +356,18 @@ if [ "$DRY_RUN" -eq 0 ] && [ -f "$CLAUDE_DIR/shine/bin/shine-tools.cjs" ]; then
   fi
 fi
 
+# ─── Activate profile ──────────────────────────────────────────────────────
+# Apply the chosen profile to settings.json so plugin/MCP enablement reflects it.
+if [ "$DRY_RUN" -eq 0 ] && [ -f "$CLAUDE_DIR/shine/bin/shine-profile.cjs" ]; then
+  info ""
+  info "Activating profile: $PROFILE"
+  if node "$CLAUDE_DIR/shine/bin/shine-profile.cjs" activate "$PROFILE" >/dev/null 2>&1; then
+    info "  ✓ Profile '$PROFILE' applied to ~/.claude/settings.json"
+  else
+    warn "  Profile activation failed — run manually: node ~/.claude/shine/bin/shine-profile.cjs activate $PROFILE"
+  fi
+fi
+
 # ─── Done ───────────────────────────────────────────────────────────────────
 log ""
 info "=== Installation complete ==="
@@ -301,6 +376,8 @@ log "Next steps:"
 log "  1. (Optional) Edit ~/.claude/settings.json — custom gateway or telemetry opt-in"
 log "  2. Run 'claude' to start a session and verify"
 log "  3. Inside Claude Code, run: /shine-help"
+log "  4. Switch profile any time: node ~/.claude/shine/bin/shine-profile.cjs activate <name>"
+log "     (or add ~/.claude/shine/bin to PATH and run 'shine activate <name>')"
 log ""
 log "Installed into ~/.claude/:"
 log "  - CLAUDE.md     (global instructions, 20 decision rules)"
