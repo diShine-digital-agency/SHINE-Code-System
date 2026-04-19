@@ -20,7 +20,7 @@ catch { emitter = { emit: (_h, _l, t) => process.stderr.write(t.endsWith('\n') ?
 
 if (process.env.SHINE_DISABLE_UPDATE_CHECK === '1') process.exit(0);
 
-const REPO = process.env.SHINE_UPDATE_REPO || 'diShine-digital-agency/shine-claude-code-framework';
+const REPO = process.env.SHINE_UPDATE_REPO || 'diShine-digital-agency/SHINE-Code-System';
 const CACHE = path.join(process.env.HOME || '~', '.claude', 'cache', 'shine-update.json');
 const TTL_MS = 24 * 60 * 60 * 1000; // 24h
 const VERSION_FILE = path.join(process.env.HOME || '~', '.claude', 'shine', 'VERSION');
