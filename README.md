@@ -9,7 +9,7 @@ _SHINE | Strategize · Handle · Implement · Navigate · Evaluate_
 [![Website](https://img.shields.io/badge/Website-dishine.it-blue)](https://code.dishine.it/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-diShine-blue)](https://linkedin.com/company/100682596)
 [![Location](https://img.shields.io/badge/Location-Milan%2C%20Italy-green)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
+[![License: CC0](https://img.shields.io/badge/License-CC0%201.0-lightgrey)](LICENSE)
 
 <p align="center">
   <img src="docs/SHINE Workflow and Architecture Overview.webp" alt="SHINE Code System overview" width="100%">
@@ -592,7 +592,7 @@ Governance & ops:
 | [`CHANGELOG.md`](./CHANGELOG.md) | Version history |
 | [`.github/workflows/validate.yml`](./.github/workflows/validate.yml) | CI: bash + node syntax, JSON validity, frontmatter, dead-ref, secret scan |
 
-# Official wiki available on [it's official website](https://code.dishine.it).
+# Official wiki available on [its official website](https://code.dishine.it).
 
 ### Decision-rule cheat sheet
 
